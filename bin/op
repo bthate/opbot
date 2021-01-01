@@ -1,0 +1,51 @@
+#!/usr/bin/python3
+# OPBOT - operbot (bin/op)
+#
+# this file is placed in the public domain
+
+import os, sys ; sys.path.insert(0, os.getcwd())
+
+import atexit
+import op
+import os
+import readline
+import sys
+import threading
+import time
+
+# defines
+
+wd = os.path.expanduser("~/.opbot")
+
+# classes
+
+class OpBot(op.hdl.Handler):
+
+    "minibot"
+
+    def __init__(self):
+        super().__init__()
+        self.register("cmd", op.hdl.cmd)
+
+    def announce(self, txt):
+        "silence announcing"
+        self.direct(txt)
+
+    def direct(self, txt):
+        print(txt)
+
+    def say(self, channel, txt):
+        "strip channel from output"
+        self.direct(txt)
+
+# runtime
+
+def main():
+    op.utl.privileges("opbot")
+    cfg = op.prs.parse_cli(wd)
+    if cfg.txt:
+        c = OpBot()
+        return c.cmd(cfg.otxt)
+
+op.trm.execute(main)
+os._exit(0)
