@@ -25,9 +25,15 @@ class Mini(op.hdl.Handler):
 # functions
 
 def main():
+    try:
+        import opbot
+    except ImportError:
+        sys.path.insert(0, os.getcwd())
+        import opbot
     op.wd = "/var/lib/opbot/"
     op.utl.privileges("opbot")
     h = Mini()
+    h.load("op.cmd")
     h.load("opbot.cmd")
     return h.cmd(" ".join(sys.argv[1:]))
 

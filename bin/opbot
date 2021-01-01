@@ -100,14 +100,12 @@ def main():
     wait = False
     if "d" in cfg.opts:
         op.utl.daemon()
-    elif "s" in cfg.opts or cfg.sets.mods:
-        h = Console()
-        wait = True
+    h = Console()
+    h.load("op.cmd")
     h.load("opbot.cmd")
     h.init(cfg.sets.mods)
     h.start()
-    if "w" in cfg.opts or wait:
-        h.wait()
+    h.wait()
 
 # runtime
 

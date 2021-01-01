@@ -9,10 +9,16 @@
 
 import op
 import os
+import sys
 
 # functions
 
 def main():
+    try:
+        import opbot
+    except ImportError:
+        sys.path.insert(0, os.getcwd())
+        import opbot
     op.wd = "/var/lib/opbot/"
     op.utl.privileges("opbot")
     h = op.hdl.Handler()

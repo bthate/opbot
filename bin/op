@@ -21,7 +21,7 @@ wd = os.path.expanduser("~/.opbot")
 
 class OpBot(op.hdl.Handler):
 
-    "minibot"
+    "operbot"
 
     def __init__(self):
         super().__init__()
@@ -44,8 +44,10 @@ def main():
     op.utl.privileges("opbot")
     cfg = op.prs.parse_cli(wd)
     if cfg.txt:
-        c = OpBot()
-        return c.cmd(cfg.otxt)
+        bot = OpBot()
+        bot.load("op.cmd")
+        bot.load("opbot.cmd")
+        return bot.cmd(cfg.otxt)
 
 op.trm.execute(main)
 os._exit(0)
