@@ -1,0 +1,27 @@
+#!/usr/bin/python3
+# OPBOT - operbot (bin/opd)
+#
+# this file is placed in the public domain
+
+"run a service for systemd"
+
+# imports
+
+import op
+import os
+
+# functions
+
+def main():
+    op.wd = "/var/lib/opbot/"
+    op.utl.privileges("opbot")
+    h = op.hdl.Handler()
+    h.load("opbot.cmd")
+    h.start()
+    h.init("irc,udp,rss")
+    h.wait()
+
+# runtime
+
+op.trm.execute(main)
+os._exit(0)

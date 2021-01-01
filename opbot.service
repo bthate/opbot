@@ -1,0 +1,14 @@
+[Unit]
+Description=OPBOT - operbot
+After=network-online.target
+
+[Service]
+DynamicUser=True
+StateDirectory=opbot
+LogsDirectory=opbot
+CacheDirectory=opbot
+ExecStart=/usr/local/bin/opd 
+CapabilityBoundingSet=CAP_NET_RAW
+
+[Install]
+WantedBy=multi-user.target

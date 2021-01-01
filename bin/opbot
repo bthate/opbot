@@ -1,0 +1,116 @@
+#!/usr/bin/python3
+# OPBOT - operbot (bin/opbot)
+#
+# this file is placed in the public domain
+
+import os, sys ; sys.path.insert(0, os.getcwd())
+
+import atexit
+import op
+import os
+import readline
+import sys
+
+# defines
+
+wd = os.path.expanduser("~/.opbot")
+
+# classes
+
+class Console(op.hdl.Handler):
+
+    "console class"
+
+    def __init__(self):
+        super().__init__()
+        self.register("cmd", op.hdl.cmd)
+
+    def announce(self, txt):
+        "silence announcing"
+        self.direct(txt)
+
+    def direct(self, txt):
+        print(txt)
+
+    def input(self):
+        "loop for input"
+        while 1:
+            try:
+                e = self.poll()
+            except EOFError:
+                break
+            self.put(e)
+            e.wait()
+
+    def poll(self):
+        "wait for input"
+        return op.hdl.Command(input("> "))
+
+    def say(self, channel, txt):
+        "strip channel from output"
+        self.direct(txt)
+
+    def start(self):
+        "start console"
+        super().start()
+        op.thr.launch(self.input)
+
+# functions
+
+def complete(text, state):
+    "complete matches"
+    matches = []
+    if text:
+        matches = [s for s in cmds if s and s.startswith(text)]
+    else:
+        matches = cmds[:]
+    try:
+        return matches[state]
+    except IndexError:
+        return None
+
+def setcompleter(commands):
+    "set the completer"
+    cmds.extend(commands)
+    readline.set_completer(complete)
+    readline.parse_and_bind("tab: complete")
+    atexit.register(lambda: readline.set_completer(None))
+
+def daemon():
+    pid = os.fork()
+    if pid != 0:
+        op.trm.termreset()
+        os._exit(0)
+    os.setsid()
+    os.umask(0)
+    si = open("/dev/null", 'r')
+    so = open("/dev/null", 'a+')
+    se = open("/dev/null", 'a+')
+    os.dup2(si.fileno(), sys.stdin.fileno())
+    os.dup2(so.fileno(), sys.stdout.fileno())
+    os.dup2(se.fileno(), sys.stderr.fileno())
+
+def main():
+    op.utl.privileges("opbot")
+    cfg = op.prs.parse_cli(wd)
+    if cfg.txt:
+        c = Console()
+        return c.cmd(cfg.otxt)
+    h = op.hdl.Handler()
+    wait = False
+    if "d" in cfg.opts:
+        op.utl.daemon()
+    elif "s" in cfg.opts or cfg.sets.mods:
+        h = Console()
+        wait = True
+    h.load("opbot.cmd")
+    h.init(cfg.sets.mods)
+    h.start()
+    if "w" in cfg.opts or wait:
+        h.wait()
+
+# runtime
+
+cmds = []
+op.trm.execute(main)
+os._exit(0)
