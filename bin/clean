@@ -2,4 +2,4 @@
 #
 # this file is placed in the public domain
 
-rm -fR opmod/*~ opmod/__pycache op/*~ op/__pycache__ opbot/*~ opbot/__pycache__ dist build *~ __pycache__ bin/*~ test/*~ test/__pycache__ opbot.egg-info
+rm -fR opmod/*~ opmod/__pycache__ op/*~ op/__pycache__ opbot/*~ opbot/__pycache__ dist build *~ __pycache__ bin/*~ test/*~ test/__pycache__ opbot.egg-info
