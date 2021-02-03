@@ -84,22 +84,18 @@ def main():
     cfg = parse_cli(wd)
     if opcheck("b", cfg)  and not cfg.txt:
         daemon()
-    h = Mini()
-    h.load("op.cmd")
-    h.walk("opmod")
-    h.walk("opbot")
-    if not opcheck("b", cfg) and cfg.txt:
+    c = Console()
+    c.load("op.cmd")
+    c.walk("opmod,opbot")
+    if cfg.txt:
+        h = Mini()
+        h.clone(c)
         return h.cmd(cfg.otxt)
-    h.init("irc", "opbot")
-    h.init(cfg.sets.mods, "opmod")
-    h.start()
     if opcheck("s", cfg):
-        c = Console()
-        c.clone(h)
+        c.init("irc", "opbot")
+        c.init(cfg.sets.mods, "opmod")
         c.start()
         c.wait()
-    if opcheck("s", cfg):
-        h.wait()
  
 console(main)
 os._exit(0)

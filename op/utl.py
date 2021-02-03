@@ -112,12 +112,13 @@ def get_name(o):
     return n
 
 def get_names(pkgs):
-    import op
-    res = op.Object()
+    from .obj import Object, update
+    from .itr import find_names
+    res = Object()
     for pkg in spl(pkgs):
         for mod in mods(pkg):
-            n = op.itr.find_names(mod)
-            op.update(res, n)
+            n = find_names(mod)
+            update(res, n)
     return res
 
 def get_tinyurl(url):

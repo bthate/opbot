@@ -120,6 +120,7 @@ class Handler(Object):
         self.names = Ol()
         self.queue = queue.Queue()
         self.stopped = False
+        self.table = Object()
         Bus.add(self)
 
     def __str__(self):
@@ -197,28 +198,23 @@ class Handler(Object):
 
     def load(self, mn):
         if mn in sys.modules:
-            mod = sys.modules[mn]
+            return sys.modules[mn]
+        elif mn in self.table:
+            return self.table[mn]
         else:
-            mod = direct(mn)
-        self.intro(mod)
-        return mod
+            self.table[mn] = direct(mn)
+            self.intro(self.table[mn])
+        return self.table[mn]
 
-    def handler(self, once=False):
+    def handler(self):
         self.running = True
         while not self.stopped:
-            try:
-                e = self.queue.get(True, 1.0)
-            except queue.Empty:
-                if once:
-                    break
-                continue
+            e = self.queue.get()
             if not e:
                 break
             if not e.orig:
                 e.orig = repr(self)
             e.thrs.append(launch(self.dispatch, e))
-            if once:
-                break
 
     def put(self, e):
         self.queue.put_nowait(e)
@@ -247,7 +243,9 @@ class Handler(Object):
                 continue
             got = False
             for name, m in inspect.getmembers(mod, inspect.ismodule):
+                print(name, m)
                 if pn in str(m):
+                    print(m)
                     self.intro(m)
                     got = True
             if got:
@@ -260,7 +258,7 @@ class Handler(Object):
 
     def wait(self):
         while not self.stopped:
-            time.sleep(0.5)
+            time.sleep(30.0)
 
 def cmd(handler, obj):
     obj.parse()

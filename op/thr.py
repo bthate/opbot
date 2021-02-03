@@ -27,18 +27,14 @@ class Thr(threading.Thread):
         for k in dir(self):
             yield k
 
-    def join(self, timeout=1.0):
+    def join(self, timeout=None):
         ""
         super().join(timeout)
         return self._result
 
     def run(self):
         ""
-        try:
-            func, args = self._queue.get_nowait()
-        except queue.Empty:
-            return
-        target = None
+        func, args = self._queue.get_nowait()
         if args:
             try:
                 target = Default(vars(args[0]))
@@ -53,9 +49,8 @@ class Thr(threading.Thread):
         except Exception as ex:
             if cfg.verbose:
                 print(get_exception())
-        self._queue.task_done()
 
-    def wait(self, timeout=1.0):
+    def wait(self, timeout=None):
         super().join(timeout)
         return self._result
 

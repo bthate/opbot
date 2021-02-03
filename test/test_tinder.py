@@ -112,5 +112,5 @@ def do_cmd(cmd):
 h = TestHandler()
 h.register("cmd", cmd)
 h.load("op.cmd")
-h.walk("opmod")
+h.walk("opmod,opbot")
 h.start()

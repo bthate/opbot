@@ -16,7 +16,7 @@ from op.dbs import find, last
 from op.obj import Cfg, Default, Object, format, get, save, update
 from op.hdl import Event, Handler, cmd
 from op.prs import parse
-from op.run import cfg
+from op.run import cfg as maincfg
 from op.thr import launch
 from op.utl import locked
 
@@ -100,6 +100,8 @@ class IRC(Handler):
     def _connect(self, server, port=6667):
         addr = socket.getaddrinfo(server, port, socket.AF_INET)[-1][-1]
         s = socket.create_connection(addr)
+        if maincfg.debug:
+            print("connected to %s" % server)
         s.setblocking(True)
         s.settimeout(1200.0)
         self._sock = s
@@ -179,11 +181,9 @@ class IRC(Handler):
             self.state.last = time.time()
 
     def _some(self):
-        if not self._sock:
-            return 
         inbytes = self._sock.recv(512)
         txt = str(inbytes, "utf-8")
-        if cfg.debug:
+        if maincfg.debug:
             print(txt.rstrip())
         if txt == "":
             raise ConnectionResetError
@@ -263,7 +263,6 @@ class IRC(Handler):
         self.raw("USER %s %s %s :%s" % (self.cfg.username, server, server, self.cfg.realname))
 
     def output(self, once=False):
-        self._connected.wait()
         while not self.stopped:
             channel, txt = self._outqueue.get()
             if channel is None:
@@ -277,8 +276,8 @@ class IRC(Handler):
     def poll(self):
         if not self._buffer:
             self._some()
-        #if not self._buffer:
-        #    return 
+        if not self._buffer:
+            return 
         e = self._parsing(self._buffer.pop(0))
         cmd = e.command
         if cmd == "PING":
@@ -303,7 +302,7 @@ class IRC(Handler):
         if not self._sock:
             return
         txt = txt.rstrip()
-        if cfg.debug:
+        if maincfg.debug:
             print(txt)
         if not txt.endswith("\r\n"):
             txt += "\r\n"
@@ -395,8 +394,6 @@ class DCC(Handler):
         self.origin = ""
 
     def raw(self, txt):
-        if not self._fsock:
-            return
         self._fsock.write(str(txt).rstrip())
         self._fsock.write("\n")
         self._fsock.flush()
@@ -418,7 +415,7 @@ class DCC(Handler):
             self._connected.set()
             return
         s.setblocking(1)
-        #os.set_inheritable(s.fileno(), os.O_RDWR)
+        os.set_inheritable(s.fileno(), os.O_RDWR)
         self._sock = s
         self._fsock = self._sock.makefile("rw")
         self.raw('Welcome %s' % dccevent.origin)
@@ -428,6 +425,7 @@ class DCC(Handler):
         super().start()
 
     def input(self):
+        self._connected.wait()
         while not self.stopped:
             try:
                 e = self.poll()
@@ -436,14 +434,11 @@ class DCC(Handler):
             self.put(e)
 
     def poll(self):
-        #self._connected.wait()
         e = Event()
         e.type = "cmd"
         e.channel = self.origin
         e.origin = self.origin or "root@dcc"
         e.orig = repr(self)
-        if not self._fsock:
-             raise EOFError
         txt = self._fsock.readline()
         txt = txt.rstrip()
         parse(e, txt)
@@ -485,7 +480,7 @@ class Users(Object):
 
     def get_users(self, origin=""):
         s = {"user": origin}
-        return find("mod.irc.User", s)
+        return find("opbot.irc.User", s)
 
     def get_user(self, origin):
         u = list(self.get_users(origin))
