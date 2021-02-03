@@ -1,4 +1,4 @@
-# OP - Object Programming Library (irc.py)
+# OPBOT - Object Programming Bot (irc.py)
 #
 # This file is placed in the Public Domain.
 
@@ -34,21 +34,15 @@ class ENOUSER(Exception):
 
 class Cfg(op.Cfg):
 
-    channel = ""
-    nick = "opbot"
-    port = 6667
-    server = ""
-    realname = "Object Programming Library"
-    username = "oplib"
 
     def __init__(self):
         super().__init__()
-        self.channel = Cfg.channel
-        self.nick = Cfg.nick
-        self.port = Cfg.port
-        self.realname = Cfg.realname
-        self.server = Cfg.server
-        self.username = Cfg.username
+        self.channel = "#opbot"
+        self.nick = "opbot"
+        self.port = 6667
+        self.server = "localhost"
+        self.realname = "Object Programming Bot"
+        self.username = "opbot"
 
 class Event(Event):
 
