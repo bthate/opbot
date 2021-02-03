@@ -13,8 +13,10 @@ import threading
 import _thread
 
 from op.dbs import find, last
+from op.obj import Cfg, Default, Object, format, get, save, update
 from op.hdl import Event, Handler, cmd
 from op.prs import parse
+from op.run import cfg
 from op.thr import launch
 from op.utl import locked
 
@@ -32,7 +34,7 @@ class ENOUSER(Exception):
 
     pass
 
-class Cfg(op.Cfg):
+class Cfg(Cfg):
 
 
     def __init__(self):
@@ -72,7 +74,7 @@ class IRC(Handler):
         self._trc = ""
         self.cc = "!"
         self.cfg = Cfg()
-        self.cmds = op.Object()
+        self.cmds = Object()
         self.channels = []
         self.register("cmd", cmd)
         self.register("ERROR", self.ERROR)
@@ -82,7 +84,7 @@ class IRC(Handler):
         self.register("QUIT", self.QUIT)
         self.register("366", self.JOINED)
         self.speed = "slow"
-        self.state = op.Object()
+        self.state = Object()
         self.state.needconnect = False
         self.state.error = ""
         self.state.last = 0
@@ -186,7 +188,7 @@ class IRC(Handler):
             return 
         inbytes = self._sock.recv(512)
         txt = str(inbytes, "utf-8")
-        if op.cfg.debug:
+        if cfg.debug:
             print(txt.rstrip())
         if txt == "":
             raise ConnectionResetError
@@ -311,7 +313,7 @@ class IRC(Handler):
         if not self._sock:
             return
         txt = txt.rstrip()
-        if op.cfg.debug:
+        if cfg.debug:
             print(txt)
         if not txt.endswith("\r\n"):
             txt += "\r\n"
@@ -333,7 +335,7 @@ class IRC(Handler):
 
     def start(self, cfg=None):
         if cfg is not None:
-            op.update(self.cfg, cfg)
+            update(self.cfg, cfg)
         else:
             last(self.cfg)
         assert self.cfg.channel
@@ -366,7 +368,6 @@ class IRC(Handler):
         pass
 
     def NOTICE(self, event):
-        from op import __version__
         if event.txt.startswith("VERSION"):
             txt = "\001VERSION %s %s - %s\001" % (self.cfg.nick.upper(), __version__, self.cfg.username)
             self.command("NOTICE", event.channel, txt)
@@ -464,20 +465,20 @@ class DCC(Handler):
     def say(self, channel, txt):
         self.raw(txt)
 
-class User(op.Object):
+class User(Object):
 
     def __init__(self):
         super().__init__()
         self.user = ""
         self.perms = []
 
-class Users(op.Object):
+class Users(Object):
 
-    userhosts = op.Object()
+    userhosts = Object()
 
     def allowed(self, origin, perm):
         perm = perm.upper()
-        origin = op.get(self.userhosts, origin, origin)
+        origin = get(self.userhosts, origin, origin)
         user = self.get_user(origin)
         if user:
             if perm in user.perms:
@@ -488,7 +489,7 @@ class Users(op.Object):
         for user in self.get_users(origin):
             try:
                 user.perms.remove(perm)
-                op.save(user)
+                save(user)
                 return True
             except ValueError:
                 pass
@@ -509,7 +510,7 @@ class Users(op.Object):
         user = User()
         user.user = origin
         user.perms = ["USER", ]
-        op.save(user)
+        save(user)
         return user
 
     def oper(self, origin):
@@ -519,7 +520,7 @@ class Users(op.Object):
         user = User()
         user.user = origin
         user.perms = ["OPER", "USER"]
-        op.save(user)
+        save(user)
         return user
 
     def perm(self, origin, permission):
@@ -528,7 +529,7 @@ class Users(op.Object):
             raise ENOUSER(origin)
         if permission.upper() not in user.perms:
             user.perms.append(permission.upper())
-            op.save(user)
+            save(user)
         return user
 
 # commands
@@ -537,9 +538,9 @@ def cfg(event):
     c = Cfg()
     last(c)
     if event.prs and not event.prs.sets:
-        return event.reply(op.format(c, skip=["username", "realname"]))
-    op.update(c, event.prs.sets)
-    op.save(c)
+        return event.reply(format(c, skip=["username", "realname"]))
+    update(c, event.prs.sets)
+    save(c)
     event.reply("ok")
 
 def dlt(event):
@@ -548,7 +549,7 @@ def dlt(event):
     selector = {"user": event.args[0]}
     for fn, o in find("mod.irc.User", selector):
         o._deleted = True
-        op.save(o)
+        save(o)
         event.reply("ok")
         break
 
@@ -556,7 +557,7 @@ def met(event):
     u = User()
     u.user = event.rest
     u.perms = ["USER"]
-    op.save(u)
+    save(u)
     event.reply("ok")
 
 def ops(event):

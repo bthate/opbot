@@ -1,4 +1,4 @@
-# OP - Object Programming Library (obj.py)
+# OPLIB - Object Programming Library (obj.py)
 #
 # This file is placed in the Public Domain.
 
@@ -13,8 +13,6 @@ import types
 import uuid
 
 __version__ = 2
-
-import op.cfg
 
 class ENOCLASS(Exception):
 
@@ -233,13 +231,14 @@ def keys(o):
         return o.__dict__.keys()
 
 def load(o, opath):
+    from .run import cfg
     assert opath
-    assert op.cfg.wd
+    assert cfg.wd
     if opath.count(os.sep) != 3:
         raise ENOFILENAME(opath)
     spl = opath.split(os.sep)
     stp = os.sep.join(spl[-4:])
-    lpath = os.path.join(op.cfg.wd, "store", stp)
+    lpath = os.path.join(cfg.wd, "store", stp)
     typ = spl[0]
     id = spl[1]
     with open(lpath, "r") as ofile:
@@ -265,14 +264,15 @@ def register(o, k, v):
     o[k] = v
 
 def save(o, stime=None):
-    assert op.cfg.wd
+    from .run import cfg
+    assert cfg.wd
     if stime:
         stp = os.path.join(o.__type__, o.__id__,
                            stime + "." + str(random.randint(0, 100000)))
     else:
         timestamp = str(datetime.datetime.now()).split()
         stp = os.path.join(o.__type__, o.__id__, os.sep.join(timestamp))
-    opath = os.path.join(op.cfg.wd, "store", stp)
+    opath = os.path.join(cfg.wd, "store", stp)
     cdir(opath)
     with open(opath, "w") as ofile:
         json.dump(o, ofile, default=default)
