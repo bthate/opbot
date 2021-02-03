@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# OPBOT - operbot (bin/opbot)
+# OPBOT - Object Programming Bot (bin/opbot)
 #
 # this file is placed in the public domain
 
@@ -102,7 +102,7 @@ def main():
         op.utl.daemon()
     h = Console()
     h.load("op.cmd")
-    h.load("opbot.cmd")
+    h.walk("opmod")
     h.init(cfg.sets.mods)
     h.start()
     h.wait()
