@@ -2,8 +2,8 @@
 #
 # This file is placed in the Public Domain.
 
-import op
-import op.cfg
+__version__ = 3
+
 import os
 import queue
 import socket
@@ -98,13 +98,8 @@ class IRC(Handler):
         self.users = Users()
 
     def _connect(self, server, port=6667):
-        addr = socket.getaddrinfo(server, port)[-1][-1]
-        addr = (server, port)
-        try:
-            s = socket.create_connection(addr, 5.0)
-        except ConnectionRefusedError:
-            self._connected.set()
-            return True
+        addr = socket.getaddrinfo(server, port, socket.AF_INET)[-1][-1]
+        s = socket.create_connection(addr)
         s.setblocking(True)
         s.settimeout(1200.0)
         self._sock = s
@@ -229,19 +224,20 @@ class IRC(Handler):
         if self._sock:
             self.logon(server, nick)
 
+    def doconnect(self):
+        assert self.cfg.server
+        assert self.cfg.nick
+        super().start()
+        launch(self.input)
+        launch(self.output)
+        self.connect(self.cfg.server, self.cfg.nick, int(self.cfg.port) or 6667)
+
     def handle(self, event):
         if event.command in self.cbs:
             self.cbs[event.command](event)
 
-    def doconnect(self):
-        assert self.cfg.server
-        assert self.cfg.nick
-        self.connect(self.cfg.server, self.cfg.nick, int(self.cfg.port) or 6667)
-        super().start()
-        launch(self.input)
-        launch(self.output)
-
     def input(self):
+        self._connected.wait()
         while not self.stopped:
             try:
                 e = self.poll()
@@ -261,20 +257,15 @@ class IRC(Handler):
             self.command("JOIN", channel)
 
     def logon(self, server, nick):
-        self._connected.wait()
         assert self.cfg.username
         assert self.cfg.realname
         self.raw("NICK %s" % nick)
         self.raw("USER %s %s %s :%s" % (self.cfg.username, server, server, self.cfg.realname))
 
     def output(self, once=False):
+        self._connected.wait()
         while not self.stopped:
-            try:
-                channel, txt = self._outqueue.get(True, 1.0)
-            except queue.Empty:
-                if once:
-                    break
-                continue
+            channel, txt = self._outqueue.get()
             if channel is None:
                 break
             if txt:
@@ -284,11 +275,10 @@ class IRC(Handler):
             time.sleep(0.01)
 
     def poll(self):
-        self._connected.wait()
         if not self._buffer:
             self._some()
-        if not self._buffer:
-            return 
+        #if not self._buffer:
+        #    return 
         e = self._parsing(self._buffer.pop(0))
         cmd = e.command
         if cmd == "PING":
@@ -319,7 +309,6 @@ class IRC(Handler):
             txt += "\r\n"
         txt = txt[:512]
         txt = bytes(txt, "utf-8")
-        self._connected.wait()
         try:
             self._sock.send(txt)
         except (OSError, ConnectionResetError) as ex:

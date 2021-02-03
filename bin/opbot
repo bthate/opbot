@@ -14,9 +14,7 @@ from op.hdl import Command, Handler, cmd
 from op.prs import parse_cli
 from op.trm import termsave, termreset
 from op.thr import launch
-from op.utl import privileges
-
-from opbot.irc import IRC
+from op.utl import opcheck, privileges
 
 wd = os.path.expanduser("~/.opbot")
 
@@ -51,6 +49,11 @@ class Console(Handler):
         super().start()
         launch(self.input)
 
+class Mini(Handler):
+
+    def direct(self, txt):
+        print(txt)
+
 def console(main):
     termsave()
     try:
@@ -65,7 +68,7 @@ def console(main):
 def daemon():
     pid = os.fork()
     if pid != 0:
-        op.trm.termreset()
+        termreset()
         os._exit(0)
     os.setsid()
     os.umask(0)
@@ -79,15 +82,24 @@ def daemon():
 def main():
     privileges("opbot")
     cfg = parse_cli(wd)
-    if "d" in cfg.opts:
+    if opcheck("b", cfg)  and not cfg.txt:
         daemon()
-    h = IRC()
+    h = Mini()
     h.load("op.cmd")
     h.walk("opmod")
     h.walk("opbot")
+    if not opcheck("b", cfg) and cfg.txt:
+        return h.cmd(cfg.otxt)
+    h.init("irc", "opbot")
     h.init(cfg.sets.mods, "opmod")
     h.start()
-    h.wait()
-
+    if opcheck("s", cfg):
+        c = Console()
+        c.clone(h)
+        c.start()
+        c.wait()
+    if opcheck("s", cfg):
+        h.wait()
+ 
 console(main)
 os._exit(0)

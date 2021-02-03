@@ -2,7 +2,7 @@
 #
 # This file is in the Public Domain
 
-import op
+from  .irc import __version__
 
 def ver(event):
-    event.reply("OPBOT %s" % op.__version__)
+    event.reply("OPBOT %s" % __version__)
