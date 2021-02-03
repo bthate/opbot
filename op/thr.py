@@ -1,23 +1,24 @@
-# OP - Object Programming Library (thr.py)
+# OPLIB - Object Programming Library (thr.py)
 #
-# This file is placed in the Public Domain
+# This file is placed in the Public Domain.
 
-import op
 import queue
 import threading
 
-from op.utl import get_exception
+from .obj import Default, Object
+from .run import cfg
+from .utl import get_exception, get_name
 
 class Thr(threading.Thread):
 
     def __init__(self, func, *args, thrname="", daemon=True):
         super().__init__(None, self.run, thrname, (), {}, daemon=daemon)
-        self._name = thrname or op.get_name(func)
+        self._name = thrname or get_name(func)
         self._result = None
         self._queue = queue.Queue()
         self._queue.put_nowait((func, args))
         self.sleep = 0
-        self.state = op.Object()
+        self.state = Object()
 
     def __iter__(self):
         return self
@@ -40,17 +41,17 @@ class Thr(threading.Thread):
         target = None
         if args:
             try:
-                target = op.Default(vars(args[0]))
+                target = Default(vars(args[0]))
                 self._name = (target and target.txt and target.txt.split()[0]) or self._name
             except TypeError:
                 pass
         self.setName(self._name)
-        if op.cfg.verbose:
+        if cfg.verbose:
              print("launch %s(%s)" % (self._name, ",".join([str(x) for x in args if x])))
         try:
             self._result = func(*args)
         except Exception as ex:
-            if op.cfg.verbose:
+            if cfg.verbose:
                 print(get_exception())
         self._queue.task_done()
 
@@ -59,7 +60,7 @@ class Thr(threading.Thread):
         return self._result
 
 def launch(func, *args, **kwargs):
-    name = kwargs.get("name", op.get_name(func))
+    name = kwargs.get("name", get_name(func))
     t = Thr(func, *args, thrname=name, daemon=True)
     t.start()
     return t

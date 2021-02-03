@@ -1,26 +1,27 @@
-# OP - Object Programming Library (hdl.py)
+# OPLIB - Object Programming Library (hdl.py)
 #
 # This file is placed in the Public Domain.
 
 import inspect
 import importlib
 import importlib.util
-import op
 import os
 import queue
 import sys
 import threading
 import time
 
-from op.dbs import last
-from op.prs import parse
-from op.thr import launch
-from op.utl import direct, spl
+from .dbs import last
+from .obj import Cfg, Default, Object, Ol, get, update
+from .prs import parse
+from .run import cfg
+from .thr import launch
+from .utl import direct, spl
 
 def __dir__():
     return ("Bus", "Command", "Event", "Handler", "cmd")
 
-class Bus(op.Object):
+class Bus(Object):
 
     objs = []
 
@@ -54,7 +55,7 @@ class Bus(op.Object):
             if repr(o) == orig:
                 o.say(channel, str(txt))
 
-class Event(op.Default):
+class Event(Default):
 
     __slots__ = ("prs", "src")
 
@@ -63,7 +64,7 @@ class Event(op.Default):
         self.channel = ""
         self.done = threading.Event()
         self.orig = None
-        self.prs = op.Default()
+        self.prs = Default()
         self.result = []
         self.thrs = []
         self.type = "event"
@@ -106,17 +107,17 @@ class Command(Event):
         if txt:
             self.txt = txt.rstrip()
 
-class Handler(op.Object):
+class Handler(Object):
 
     threaded = False
 
     def __init__(self):
         super().__init__()
-        self.cbs = op.Object()
-        self.cfg = op.Cfg()
-        self.cmds = op.Object()
-        self.modnames = op.Object()
-        self.names = op.Ol()
+        self.cbs = Object()
+        self.cfg = Cfg()
+        self.cmds = Object()
+        self.modnames = Object()
+        self.names = Ol()
         self.queue = queue.Queue()
         self.stopped = False
         Bus.add(self)
@@ -125,10 +126,10 @@ class Handler(op.Object):
         return str(self.cfg)
 
     def clone(self, hdl):
-        op.update(self.cmds, hdl.cmds)
-        op.update(self.cbs, hdl.cbs)
-        op.update(self.modnames, hdl.modnames)
-        op.update(self.names, hdl.names)
+        update(self.cmds, hdl.cmds)
+        update(self.cbs, hdl.cbs)
+        update(self.modnames, hdl.modnames)
+        update(self.names, hdl.names)
 
     def cmd(self, txt):
         self.register("cmd", cmd)
@@ -144,12 +145,14 @@ class Handler(op.Object):
         if event.type and event.type in self.cbs:
             self.cbs[event.type](self, event)
 
-    def fromdir(self, pkgpath, name="op"):
+    def fromdir(self, pkgpath, name=""):
         if not pkgpath:
             return
         if not os.path.exists(pkgpath):
             return
         path = os.path.dirname(pkgpath)
+        if not name:
+            name = pkgpath.split(os.sep)[-1]
         sys.path.insert(0, path)
         for mn in [x[:-3] for x in os.listdir(pkgpath)
                    if x and x.endswith(".py")
@@ -178,7 +181,7 @@ class Handler(op.Object):
         return [t for t in thrs if t]
 
     def intro(self, mod):
-        if op.cfg.debug:
+        if cfg.debug:
             print("load %s" % mod.__name__)
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if o.__code__.co_argcount == 1:
@@ -188,7 +191,7 @@ class Handler(op.Object):
                     self.cmds[key] = o
                 self.modnames[key] = o.__module__
         for _key, o in inspect.getmembers(mod, inspect.isclass):
-            if issubclass(o, op.Object):
+            if issubclass(o, Object):
                 t = "%s.%s" % (o.__module__, o.__name__)
                 self.names.append(o.__name__.lower(), t)
 
@@ -261,7 +264,7 @@ class Handler(op.Object):
 
 def cmd(handler, obj):
     obj.parse()
-    f = op.get(handler.cmds, obj.cmd, None)
+    f = get(handler.cmds, obj.cmd, None)
     res = None
     if f:
         res = f(obj)

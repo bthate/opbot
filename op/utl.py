@@ -1,4 +1,4 @@
-# OP - Object Programming Library (utl.py)
+# OPLIB - Object Programming Library (utl.py)
 #
 # This file is placed in the Public Domain.
 
@@ -14,6 +14,7 @@ import socket
 import sys
 import time
 import traceback
+import types
 import urllib
 
 from urllib.parse import quote_plus, urlencode
@@ -38,8 +39,8 @@ timestrings = [
 ]
 
 def banner():
-    import op
-    return "OPLIB %s - Object Programming Library started at %s" % (op.__version__, time.ctime(time.time()))
+    from .run import __version__
+    return "OPLIB %s - Object Programming Library started at %s" % (__version__, time.ctime(time.time()))
 
 def day():
     return str(datetime.datetime.today()).split()[0]
@@ -94,6 +95,22 @@ def get_exception(txt="", sep=" "):
     del trace
     return res
 
+def get_name(o):
+    t = type(o)
+    if t == types.ModuleType:
+        return o.__name__
+    try:
+        n = "%s.%s" % (o.__self__.__class__.__name__, o.__name__)
+    except AttributeError:
+        try:
+            n = "%s.%s" % (o.__class__.__name__, o.__name__)
+        except AttributeError:
+            try:
+                n = o.__class__.__name__
+            except AttributeError:
+                n = o.__name__
+    return n
+
 def get_names(pkgs):
     import op
     res = op.Object()
@@ -120,6 +137,15 @@ def get_tinyurl(url):
         if i:
             return i.groups()
     return []
+
+def get_type(o):
+    t = type(o)
+    if t == type:
+        try:
+            return "%s.%s" % (o.__module__, o.__name__)
+        except AttributeError:
+            pass
+    return str(type(o)).split()[-1][1:-2]
 
 def get_url(url):
     import op

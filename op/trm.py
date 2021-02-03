@@ -1,6 +1,6 @@
-# OP - Object Programming Library (trm.py)
+# OPLIV - Object Programming Library (trm.py)
 #
-# This file is placed in the Public Domain
+# This file is placed in the Public Domain.
 
 import atexit
 import os
@@ -8,7 +8,7 @@ import sys
 import termios
 import _thread
 
-from op.utl import get_exception
+from .utl import get_exception
 
 resume = {}
 

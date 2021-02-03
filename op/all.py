@@ -10,7 +10,9 @@ import op.clk
 import op.cmd
 import op.dbs
 import op.hdl
+import op.itr
 import op.prs
+import op.sel
 import op.thr
 import op.trm
 import op.utl

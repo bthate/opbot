@@ -1,17 +1,17 @@
-# OP - Object Programming Library (clk.py)
+# OPLIB - Object Programming Library (clk.py)
 #
 # This file is placed in the Public Domain.
 
-import op
 import threading
 import time
 
-from op.thr import launch
+from .obj import Object
+from .thr import launch
 
 def __dir__():
     return ("Repeater", "Timer")
 
-class Timer(op.Object):
+class Timer(Object):
 
     def __init__(self, sleep, func, *args, **kwargs):
         super().__init__()
@@ -20,7 +20,7 @@ class Timer(op.Object):
         self.args = args
         self.name = kwargs.get("name", "")
         self.kwargs = kwargs
-        self.state = op.Object()
+        self.state = Object()
         self.timer = None
 
     def run(self, *args, **kwargs):

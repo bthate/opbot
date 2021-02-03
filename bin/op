@@ -1,53 +1,41 @@
 #!/usr/bin/python3
-# OPBOT - operbot (bin/op)
+# OPBOT - operbot (bin/opcmd)
 #
 # this file is placed in the public domain
 
-import os, sys ; sys.path.insert(0, os.getcwd())
-
-import atexit
-import op
 import os
-import readline
 import sys
-import threading
-import time
 
-# defines
+from op.hdl import Handler, cmd
+from op.run import cfg
+from op.trm import termsave, termreset
 
-wd = os.path.expanduser("~/.opbot")
+def console(main):
+    termsave()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except PermissionError as ex:
+        print(str(ex))
+    finally:
+        termreset()
 
-# classes
-
-class OpBot(op.hdl.Handler):
-
-    "operbot"
+class Mini(Handler):
 
     def __init__(self):
         super().__init__()
-        self.register("cmd", op.hdl.cmd)
-
-    def announce(self, txt):
-        "silence announcing"
-        self.direct(txt)
+        self.register("cmd", cmd)
 
     def direct(self, txt):
         print(txt)
 
-    def say(self, channel, txt):
-        "strip channel from output"
-        self.direct(txt)
-
-# runtime
-
 def main():
-    op.utl.privileges("opbot")
-    cfg = op.prs.parse_cli(wd)
-    if cfg.txt:
-        bot = OpBot()
-        bot.load("op.cmd")
-        bot.load("opbot.cmd")
-        return bot.cmd(cfg.otxt)
+    cfg.wd = os.path.expanduser("~/.opbot")
+    h = Mini()
+    h.load("op.cmd")
+    h.walk("opmod,opbot")
+    return h.cmd(" ".join(sys.argv[1:]))
 
-op.trm.execute(main)
+console(main)
 os._exit(0)

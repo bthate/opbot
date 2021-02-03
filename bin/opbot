@@ -51,23 +51,6 @@ class Console(Handler):
         super().start()
         launch(self.input)
 
-def complete(text, state):
-    matches = []
-    if text:
-        matches = [s for s in cmds if s and s.startswith(text)]
-    else:
-        matches = cmds[:]
-    try:
-        return matches[state]
-    except IndexError:
-        return None
-
-def setcompleter(commands):
-    cmds.extend(commands)
-    readline.set_completer(complete)
-    readline.parse_and_bind("tab: complete")
-    atexit.register(lambda: readline.set_completer(None))
-
 def console(main):
     termsave()
     try:
@@ -96,21 +79,15 @@ def daemon():
 def main():
     privileges("opbot")
     cfg = parse_cli(wd)
-    if cfg.txt:
-        c = Console()
-        return c.cmd(cfg.otxt)
-    h = Handler()
-    wait = False
     if "d" in cfg.opts:
         daemon()
-    h = Console()
+    h = IRC()
     h.load("op.cmd")
     h.walk("opmod")
     h.walk("opbot")
-    h.init(cfg.sets.mods)
+    h.init(cfg.sets.mods, "opmod")
     h.start()
     h.wait()
 
-cmds = []
 console(main)
 os._exit(0)

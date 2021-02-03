@@ -1,17 +1,16 @@
-# OP - Object Programming Library (self.py)
+# OPLIB - Object Programming Library (self.py)
 #
 # This file is placed in the Public Domain.
 
-import op
 import select
 import selectors
 import threading
 import time
 import sys
 
-from op.hdl import Event, Handler
-from op.thr import launch
-from op.utl import get_exception
+from .hdl import Event, Handler
+from .thr import launch
+from .utl import get_exception, get_name
 
 class EDISCONNECT(Exception):
 
@@ -56,5 +55,5 @@ class Select(Handler):
         super().stop()
 
     def start(self):
-        launch(self.select, name="%s.select" % op.get_name(self), daemon=True)
+        launch(self.select, name="%s.select" % get_name(self), daemon=True)
         super().start()

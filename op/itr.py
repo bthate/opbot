@@ -1,16 +1,16 @@
-# OP - Object Programming Library (itr.py)
+# OPLIB - Object Programming Library (itr.py)
 #
 # This file is placed in the Public Domain.
 
-import op
 import importlib
 import inspect
 import pkgutil
 
-from op.utl import direct
+from .obj import Object, Ol
+from .utl import direct
 
 def find_cmds(mod):
-    cmds = op.Object()
+    cmds = Object()
     for key, o in inspect.getmembers(mod, inspect.isfunction):
         if "event" in o.__code__.co_varnames:
             if o.__code__.co_argcount == 1:
@@ -18,7 +18,7 @@ def find_cmds(mod):
     return cmds
 
 def find_funcs(mod):
-    funcs = op.Object()
+    funcs = Object()
     for key, o in inspect.getmembers(mod, inspect.isfunction):
         if "event" in o.__code__.co_varnames:
             if o.__code__.co_argcount == 1:
@@ -26,7 +26,7 @@ def find_funcs(mod):
     return funcs
 
 def find_mods(mod):
-    mods = op.Object()
+    mods = Object()
     for key, o in inspect.getmembers(mod, inspect.isfunction):
         if "event" in o.__code__.co_varnames:
             if o.__code__.co_argcount == 1:
@@ -34,24 +34,24 @@ def find_mods(mod):
     return mods
 
 def find_classes(mod):
-    nms = op.Ol()
+    nms = Ol()
     for _key, o in inspect.getmembers(mod, inspect.isclass):
-        if issubclass(o, op.Object):
+        if issubclass(o, Object):
             t = "%s.%s" % (o.__module__, o.__name__)
             nms.append(o.__name__, t)
     return nms
 
 def find_class(mod):
-    mds = op.Ol()
+    mds = Ol()
     for key, o in inspect.getmembers(mod, inspect.isclass):
-        if issubclass(o, op.Object):
+        if issubclass(o, Object):
             mds.append(o.__name__, o.__module__)
     return mds
 
 def find_names(mod):
-    tps = op.Ol()
+    tps = Ol()
     for _key, o in inspect.getmembers(mod, inspect.isclass):
-        if issubclass(o, op.Object):
+        if issubclass(o, Object):
             t = "%s.%s" % (o.__module__, o.__name__)
             tps.append(o.__name__.lower(), t)
     return tps
