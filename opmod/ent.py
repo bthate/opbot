@@ -1,16 +1,17 @@
-# OP - Object Programming Lirbrary (cmd.py)
+# OPMOD - Object Programming Modules (cmd.py)
 #
-# this file is placed in the Public Domain
+# This file is placed in the Public Domain.
 
-import op
+from op.dbs import find
+from op.obj import Object, save
 
-class Log(op.Object):
+class Log(Object):
 
     def __init__(self):
         super().__init__()
         self.txt = ""
 
-class Todo(op.Object):
+class Todo(Object):
 
     def __init__(self):
         super().__init__()
@@ -22,7 +23,7 @@ def dne(event):
     selector = {"txt": event.args[0]}
     for fn, o in find("mod.ent.Todo", selector):
         o._deleted = True
-        op.save(o)
+        save(o)
         event.reply("ok")
         break
 
@@ -31,7 +32,7 @@ def log(event):
         return
     l = Log()
     l.txt = event.rest
-    op.save(l)
+    save(l)
     event.reply("ok")
 
 def tdo(event):
@@ -39,5 +40,5 @@ def tdo(event):
         return
     o = Todo()
     o.txt = event.rest
-    op.save(o)
+    save(o)
     event.reply("ok")

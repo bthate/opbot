@@ -1,32 +1,27 @@
-# OP - Object Programming (udp.py)
+# OPMOD - Object Programming Modules (udp.py)
 #
-# this file is placed in the public domain
+# This file is placed in the Public Domain.
 
-"udp to irc relay (udp)"
-
-import op
 import socket
 import time
 
 from op.dbs import last
+from op.obj import Object, Cfg
 from op.hdl import Bus
 from op.thr import launch
 
 def init(hdl):
-    "udp to irc relay"
     u = UDP()
     return launch(u.start)
 
-class Cfg(op.Cfg):
-
-    "configuration"
+class Cfg(Cfg):
 
     def __init__(self):
         super().__init__()
         self.host = "localhost"
         self.port = 5500
 
-class UDP(op.Object):
+class UDP(Object):
 
     "udp to irc relay"
 

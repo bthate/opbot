@@ -1,12 +1,11 @@
-# OP - Object Programming (mbx.py)
+# OPMOD - Object Programming Modules (mbx.py)
 #
-# this file is placed in the public domain
-
-"mailbox"
+# This file is placed in the Public Domain.
 
 import mailbox
-import op
 import os
+
+from op.obj import Default, format, keys, save, update
 
 bdmonths = ['Bo', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
             'Sep', 'Oct', 'Nov', 'Dec']
@@ -26,7 +25,7 @@ monthint = {
     'Dec': 12
 }
 
-class Email(op.Default):
+class Email(Default):
 
     "email stored in a Object"
 
@@ -74,7 +73,7 @@ def mbx(event):
     "import mailbox or maildir"
     if not event.args:
         return
-    if os.path.exists(os.path.join(op.wd, "store", "op.mbx.Email")):
+    if os.path.exists(os.path.join(cfg.wd, "store", "opmod.mbx.Email")):
         event.reply("email is already scanned")
         return
     fn = os.path.expanduser(event.args[0])
@@ -92,8 +91,8 @@ def mbx(event):
         pass
     for m in thing:
         o = Email()
-        op.update(o, op.Object(m))
-        if "Date" in op.keys(o):
+        update(o, Object(m))
+        if "Date" in keys(o):
             sdate = os.sep.join(to_date(o.Date).split())
         else:
             continue
@@ -102,7 +101,7 @@ def mbx(event):
             if payload.get_content_type() == 'text/plain':
                 o.text += payload.get_payload()
         o.text = o.text.replace("\\n", "\n")
-        op.save(o, stime=sdate)
+        save(o, stime=sdate)
         nr += 1
     if nr:
         event.reply("ok %s" % nr)

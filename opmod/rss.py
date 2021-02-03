@@ -1,23 +1,17 @@
-# OP - Object Programming (rss.py)
+# OPMOD - Object Programming Modules (rss.py)
 #
-# this file is placed in the public domain
+# This file is placed in the Public Domain.
 
-"rich site syndicate (rss)"
-
-# imports
-
-import op
 import urllib
 
 from op.clk import Repeater
-from op.dbs import all, last
+from op.dbs import all, last, last_match
+from op.obj import Cfg, Default, Object, get, save, update
 from op.hdl import Bus
 from op.thr import launch
 from op.utl import get_tinyurl, get_url, strip_html, unescape
 
 from urllib.error import HTTPError, URLError
-
-# defines
 
 def __dir__():
     return ("Cfg", "Rss", "Feed", "Fetcher", "init", "dpl", "rem", "ftc", "rss")
@@ -33,45 +27,34 @@ def init(hdl):
     f = Fetcher()
     return launch(f.start)
 
-# classes
-
-class Cfg(op.Cfg):
-
-    "rss configuration"
+class Cfg(Cfg):
 
     def __init__(self):
         super().__init__()
         self.dosave = True
 
-class Feed(op.Default):
+class Feed(Default):
 
-    "feed item"
+     pass
 
-class Rss(op.Object):
-
-    "rss feed url"
+class Rss(Object):
 
     def __init__(self):
         super().__init__()
         self.rss = ""
 
-class Seen(op.Object):
-
-    "all urls seen"
+class Seen(Object):
 
     def __init__(self):
         super().__init__()
         self.urls = []
 
-class Fetcher(op.Object):
-
-    "rss feed poller"
+class Fetcher(Object):
 
     cfg = Cfg()
     seen = Seen()
 
     def display(self, o):
-        "display a rss feed item"
         result = ""
         dl = []
         try:
@@ -85,7 +68,7 @@ class Fetcher(op.Object):
         for key in dl:
             if not key:
                 continue
-            data = op.get(o, key, None)
+            data = get(o, key, None)
             if not data:
                 continue
             if key == "link" and self.cfg.tinyurl:
@@ -100,7 +83,6 @@ class Fetcher(op.Object):
         return result[:-2].rstrip()
 
     def fetch(self, rssobj):
-        "rss feed"
         counter = 0
         objs = []
         if not rssobj.rss:
@@ -109,8 +91,8 @@ class Fetcher(op.Object):
             if not o:
                 continue
             f = Feed()
-            op.update(f, rssobj)
-            op.update(f, op.Object(o))
+            update(f, rssobj)
+            update(f, Object(o))
             u = urllib.parse.urlparse(f.link)
             if u.path and not u.path == "/":
                 url = "%s://%s/%s" % (u.scheme, u.netloc, u.path)
@@ -122,23 +104,21 @@ class Fetcher(op.Object):
             counter += 1
             objs.append(f)
             if self.cfg.dosave:
-                op.save(f)
+                save(f)
         if objs:
-            op.save(Fetcher.seen)
+            save(Fetcher.seen)
         for o in objs:
             txt = self.display(o)
             Bus.announce(txt)
         return counter
 
     def run(self):
-        "all feeds"
         thrs = []
         for fn, o in all("mod.rss.Rss"):
-            thrs.append(launch(self.fetch, op.Default(o)))
+            thrs.append(launch(self.fetch, Default(o)))
         return thrs
 
     def start(self, repeat=True):
-        "rss poller"
         last(Fetcher.cfg)
         last(Fetcher.seen)
         if repeat:
@@ -146,41 +126,33 @@ class Fetcher(op.Object):
             repeater.start()
 
     def stop(self):
-        "rss poller"
-        op.save(self.seen)
-
-# functions
+        save(self.seen)
 
 def get_feed(url):
-    "feed"
-    if op.debug:
-        return [op.Object(), op.Object()]
+    if cfg.debug:
+        return [Object(), Object()]
     try:
         result = get_url(url)
     except (HTTPError, URLError):
-        return [op.Object(), op.Object()]
+        return [Object(), Object()]
     if gotparser:
         result = feedparser.parse(result.data)
         if "entries" in result:
             for entry in result["entries"]:
                 yield entry
     else:
-        return [op.Object(), op.Object()]
-
-# commands
+        return [Object(), Object()]
 
 def dpl(event):
-    "set keys to display (dpl)"
     if len(event.args) < 2:
         return
     setter = {"display_list": event.args[1]}
-    for fn, o in last_match("mod.rss.Rss", {"rss": event.args[0]}):
-        op.edit(o, setter)
-        op.save(o)
+    for fn, o in last_match("opmod.rss.Rss", {"rss": event.args[0]}):
+        edit(o, setter)
+        save(o)
         event.reply("ok")
 
 def ftc(event):
-    "run a fetch (ftc)"
     res = []
     thrs = []
     fetcher = Fetcher()
@@ -193,29 +165,27 @@ def ftc(event):
         return
 
 def rem(event):
-    "remove a rss feed (rem)"
     if not event.args:
         return
     selector = {"rss": event.args[0]}
     nr = 0
     got = []
-    for fn, o in find("mod.rss.Rss", selector):
+    for fn, o in find("opmod.rss.Rss", selector):
         nr += 1
         o._deleted = True
         got.append(o)
     for o in got:
-        op.save(o)
+        save(o)
     event.reply("ok")
 
 def rss(event):
-    "add a rss feed (rss)"
     if not event.args:
         return
     url = event.args[0]
-    res = list(find("mod.rss.Rss", {"rss": url}))
+    res = list(find("opmod.rss.Rss", {"rss": url}))
     if res:
         return
-    o = op.rss.Rss()
+    o = Rss()
     o.rss = event.args[0]
-    op.save(o)
+    save(o)
     event.reply("ok")
