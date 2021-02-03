@@ -6,34 +6,33 @@
 import os, sys ; sys.path.insert(0, os.getcwd())
 
 import atexit
-import op
 import os
 import readline
 import sys
 
-# defines
+from op.hdl import Command, Handler, cmd
+from op.prs import parse_cli
+from op.trm import termsave, termreset
+from op.thr import launch
+from op.utl import privileges
+
+from opbot.irc import IRC
 
 wd = os.path.expanduser("~/.opbot")
 
-# classes
-
-class Console(op.hdl.Handler):
-
-    "console class"
+class Console(Handler):
 
     def __init__(self):
         super().__init__()
-        self.register("cmd", op.hdl.cmd)
+        self.register("cmd", cmd)
 
     def announce(self, txt):
-        "silence announcing"
         self.direct(txt)
 
     def direct(self, txt):
         print(txt)
 
     def input(self):
-        "loop for input"
         while 1:
             try:
                 e = self.poll()
@@ -43,22 +42,16 @@ class Console(op.hdl.Handler):
             e.wait()
 
     def poll(self):
-        "wait for input"
-        return op.hdl.Command(input("> "))
+        return Command(input("> "))
 
     def say(self, channel, txt):
-        "strip channel from output"
         self.direct(txt)
 
     def start(self):
-        "start console"
         super().start()
-        op.thr.launch(self.input)
-
-# functions
+        launch(self.input)
 
 def complete(text, state):
-    "complete matches"
     matches = []
     if text:
         matches = [s for s in cmds if s and s.startswith(text)]
@@ -70,11 +63,21 @@ def complete(text, state):
         return None
 
 def setcompleter(commands):
-    "set the completer"
     cmds.extend(commands)
     readline.set_completer(complete)
     readline.parse_and_bind("tab: complete")
     atexit.register(lambda: readline.set_completer(None))
+
+def console(main):
+    termsave()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except PermissionError as ex:
+        print(str(ex))
+    finally:
+        termreset()
 
 def daemon():
     pid = os.fork()
@@ -91,24 +94,23 @@ def daemon():
     os.dup2(se.fileno(), sys.stderr.fileno())
 
 def main():
-    op.utl.privileges("opbot")
-    cfg = op.prs.parse_cli(wd)
+    privileges("opbot")
+    cfg = parse_cli(wd)
     if cfg.txt:
         c = Console()
         return c.cmd(cfg.otxt)
-    h = op.hdl.Handler()
+    h = Handler()
     wait = False
     if "d" in cfg.opts:
-        op.utl.daemon()
+        daemon()
     h = Console()
     h.load("op.cmd")
     h.walk("opmod")
+    h.walk("opbot")
     h.init(cfg.sets.mods)
     h.start()
     h.wait()
 
-# runtime
-
 cmds = []
-op.trm.execute(main)
+console(main)
 os._exit(0)
