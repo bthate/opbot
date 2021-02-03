@@ -1,24 +1,23 @@
-#!/usr/bin/python3
-# OPBOT - operbot (bin/test)
+#!/usr/bin/env python3
+# OPLIB- Object Programming Library (bin/test)
 #
-# this file is placed in the public domain
-
-"unittests"
-
-# imports
+# This file is placed in the Public Domain.
 
 import os, sys ; sys.path.insert(0, os.getcwd())
+import importlib
+importlib.invalidate_caches()
 
-import op
+import sysconfig
+import threading
 import time
 import unittest
+import _thread
 
-# defines
+from op.run import cfg
+from op.prs import parse_cli
+from op.utl import get_exception
 
 test_path = os.getcwd() + os.sep + "test"
-wd = os.path.expanduser("~/.test")
-
-# functions
 
 def open(txt):
     try:
@@ -27,10 +26,19 @@ def open(txt):
     except:
         pass
 
+def execute(main):
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except PermissionError as ex:
+        print(str(ex))
+    except Exception as ex:
+        print(get_exception())
+
 def main():
     open("rm -fR ~/.test")
-    op.debug = True
-    cfg = op.prs.parse_cli(wd)
+    parse_cli(os.path.expanduser("~/.test"))
     if cfg.txt:
         pat = "test_%s*" % cfg.txt
     else:
@@ -38,7 +46,5 @@ def main():
     suite = unittest.loader.TestLoader().discover(test_path, pattern=pat)
     unittest.TextTestRunner(verbosity=3).run(suite)
 
-# runtime
-
-op.trm.execute(main)
+execute(main)
 os._exit(0)
