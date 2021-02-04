@@ -9,7 +9,6 @@ from op.run import cfg
 from op.utl import fntime, get_names
 
 def fnd(event):
-    print(event)
     if not event.args:
         fls = list_files(cfg.wd)
         if fls:
@@ -19,11 +18,8 @@ def fnd(event):
     name = event.args[0]
     names = get_names("op,opmod,opbot")
     t = get(names, name, [name])
-    print(t)
     for otype in t:
-        print(otype)
         for fn, o in find(otype, event.prs.gets, event.prs.index, event.prs.timed):
-            print(o)
             nr += 1
             txt = "%s %s" % (str(nr), format(o, event.xargs or keys(o), skip=event.prs.skip))
             if "t" in event.prs.opts:
