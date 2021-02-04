@@ -1,28 +1,31 @@
 #!/usr/bin/python3
 # OPBOT - operbot (bin/opcmd)
 #
-# this file is placed in the public domain
+# This file is placed in the Public Domain.
 
-"run a cli for botd"
-
-# imports
-
-import op
 import os
 import sys
 
-# classes
+from op.hdl import Handler, cmd
+from op.run import cfg
+from op.utl import privileges
 
-class Mini(op.hdl.Handler):
+class Mini(Handler):
 
     def __init__(self):
         super().__init__()
-        self.register("cmd", op.hdl.cmd)
+        self.register("cmd", cmd)
 
     def direct(self, txt):
         print(txt)
 
-# functions
+def execute(main):
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except PermissionError as ex:
+        print(str(ex))
 
 def main():
     try:
@@ -30,14 +33,14 @@ def main():
     except ImportError:
         sys.path.insert(0, os.getcwd())
         import opbot
-    op.wd = "/var/lib/opbot/"
-    op.utl.privileges("opbot")
+    cfg.wd = "/var/lib/opbot/"
+    privileges("opbot")
     h = Mini()
     h.load("op.cmd")
-    h.load("opbot.cmd")
+    h.walk("opbot,opmod")
     return h.cmd(" ".join(sys.argv[1:]))
 
 # runtime
 
-op.trm.execute(main)
+execute(main)
 os._exit(0)
