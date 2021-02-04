@@ -14,7 +14,6 @@ import time
 from .dbs import last
 from .obj import Cfg, Default, Object, Ol, get, update
 from .prs import parse
-from .run import cfg
 from .thr import launch
 from .utl import direct, spl
 
@@ -182,8 +181,6 @@ class Handler(Object):
         return [t for t in thrs if t]
 
     def intro(self, mod):
-        if cfg.debug:
-            print("load %s" % mod.__name__)
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if o.__code__.co_argcount == 1:
                 if o.__code__.co_varnames[0] == "obj":
@@ -243,9 +240,7 @@ class Handler(Object):
                 continue
             got = False
             for name, m in inspect.getmembers(mod, inspect.ismodule):
-                print(name, m)
                 if pn in str(m):
-                    print(m)
                     self.intro(m)
                     got = True
             if got:
