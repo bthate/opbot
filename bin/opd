@@ -1,17 +1,22 @@
 #!/usr/bin/python3
 # OPBOT - operbot (bin/opd)
 #
-# this file is placed in the public domain
+# This file is placed in the Public Domain.
 
-"run a service for systemd"
-
-# imports
-
-import op
 import os
 import sys
 
-# functions
+from op.hdl import Handler, cmd
+from op.run import cfg
+from op.utl import privileges
+
+def execute(main):
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except Exception as ex:
+        print("")
 
 def main():
     try:
@@ -19,15 +24,14 @@ def main():
     except ImportError:
         sys.path.insert(0, os.getcwd())
         import opbot
-    op.wd = "/var/lib/opbot/"
-    op.utl.privileges("opbot")
-    h = op.hdl.Handler()
-    h.load("opbot.cmd")
+    cfg.wd = "/var/lib/opbot/"
+    privileges("opbot")
+    h = Handler()
+    h.load("op.cmd")
     h.start()
-    h.init("irc,udp,rss")
+    h.init("irc", "opbot")
+    h.init("udp,rss", "opmod")
     h.wait()
 
-# runtime
-
-op.trm.execute(main)
+execute(main)
 os._exit(0)

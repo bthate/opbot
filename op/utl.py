@@ -42,6 +42,20 @@ def banner():
     from .run import __version__
     return "OPLIB %s - Object Programming Library started at %s" % (__version__, time.ctime(time.time()))
 
+def cdir(path):
+    if os.path.exists(path):
+        return
+    res = ""
+    path2, _fn = os.path.split(path)
+    for p in path2.split(os.sep):
+        res += "%s%s" % (p, os.sep)
+        padje = os.path.abspath(os.path.normpath(res))
+        try:
+            os.mkdir(padje)
+            os.chmod(padje, 0o700)
+        except (IsADirectoryError, NotADirectoryError, FileExistsError):
+            pass
+
 def day():
     return str(datetime.datetime.today()).split()[0]
 
