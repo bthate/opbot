@@ -17,7 +17,7 @@ setup(
     description="operbot",
     long_description=readme(),
     license='Public Domain',
-    install_requires=["oplib", "opmod"],
+    install_requires=["oplib", "opmod", "feedparser"],
     packages=["opbot"],
     namespace_packages=["opbot"],
     scripts=["bin/opbot", "bin/opcmd", "bin/opctl", "bin/opd", "bin/opudp"],

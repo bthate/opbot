@@ -7,11 +7,7 @@ OPBOT is a pure python3 IRC chat bot that can run as a background daemon
 for 24/7 a day presence in a IRC channel. It installs itself as a service so
 you can get it restarted on reboot. You can use it to display RSS feeds, act as a
 UDP to IRC gateway, program your own commands for it, have it log objects on
-disk and search them and scan emails for correspondence analysis. OPBOT uses
-a JSON in file database with a versioned readonly storage. It reconstructs
-objects based on type information in the path and uses a "dump OOP and use
-OP" programming library where the methods are factored out into functions
-that use the object as the first argument.
+disk and search them and scan emails for correspondence analysis. 
 
 OPBOT is placed in the Public Domain, no COPYRIGHT, no LICENSE.
 
@@ -24,23 +20,41 @@ installation is through pypi:
 
  > sudo pip3 install opbot
 
-MODULES
+SERVICE
 =======
 
-OPBOT provides the following modules:
+If you want to run the bot 24/7 you can install OPBOT as a service for
+the systemd daemon. You can do this by copying the following into
+the /etc/systemd/system/opbot.service file, enable it and call restart:
 
 ::
 
-    opbot.irc          - internet relay chat
-    opbot.rss          - rich site syndicate
-    opbot.udp          - udp to irc relay
+ $ sudo cp opbot.service /etc/systemd/system
+ $ sudo systemctl enable opbot
+ $ sudo systemctl daemon-reload
+ $ sudo systemctl start opbot
+
+default channel/server to join is #opbot on localhost.
+
+to configure opbot use the cfg command:
+
+::
+
+ $ sudo opctl cfg server=<server> channel=<channel> nick=<nick>
+ $ suod systemctl restart opbot
+
+if you don't want opbot to startup at boot, remove the service file:
+
+::
+
+ $ sudo rm /etc/systemd/system/opbot.service
 
 OPCTL
 =====
 
-OPBOT has it's own CLI, the opctl program. It needs root because OPBOT
-program uses systemd to get it started after a reboot. You can run it on the shell
-prompt and, as default, it won't do anything.
+OPBOT has it's own CLI, the opctl program. It needs root because the opbot
+program uses systemd to get it started after a reboot. You can run it on 
+the shell prompt and, as default, it won't do anything.
 
 :: 
 
@@ -76,7 +90,7 @@ then restart the opbot service:
 
 ::
 
- $ sudo service opbot restart
+ $ sudo systemctl restart opbot
 
 RSS
 ===
@@ -141,52 +155,40 @@ to send a udp packet to OPBOT in python3:
      sock.sendto(bytes(txt.strip(), "utf-8"), host, port)
 
 
-SERVICE
+
+MODULES
 =======
 
-if you want to run the bot 24/7 you can install OPBOT as a service for
-the systemd daemon. You can do this by copying the following into
-the /etc/systemd/system/opbot.service file:
+Object Programming provides the op package with the following modules:
 
 ::
 
- [Unit]
- Description=OPBOT - operbot
- After=network-online.target
+    op                  - object programming library
+    op.clk              - clock/repeater
+    op.cmd              - commands
+    op.dbs              - databases
+    op.hdl              - handler
+    op.prs              - parser
+    op.thr              - threads
+    op.trm              - terminal
+    op.utl              - utilities
 
- [Service]
- DynamicUser=True
- StateDirectory=opbot
- LogsDirectory=opbot
- CacheDirectory=opbot
- ExecStart=/usr/local/bin/opd
- CapabilityBoundingSet=CAP_NET_RAW
-
- [Install]
- WantedBy=multi-user.target
-
-then enable the opbot service with:
+OPMOD has these modules:
 
 ::
 
- $ sudo systemctl enable opbot
- $ sudo systemctl daemon-reload
+    opmod.dbg           - debug
+    opmod.ent           - log and todo
+    opmod.irc           - Internet Relay Chat
+    opmod.mbx           - mailbox/maildir
+    opmod.rss           - Rich Site Syndicate
+    opmod.udp           - Uniform Datagram Protocol
 
-to configure OPBOT use the cfg (config) command (see above). use sudo for the system
-daemon and without sudo if you want to run the bot locally. then restart
-the opbot service.
-
-::
-
- $ sudo service opbot stop
- $ sudo service opbot start
-
-if you don't want opbot to startup at boot, remove the service file:
+OPBOT provides the following modules:
 
 ::
 
- $ sudo rm /etc/systemd/system/opbot.service
-
+    opbot.irc          - internet relay chat
 
 CONTACT
 =======
