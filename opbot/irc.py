@@ -2,7 +2,7 @@
 #
 # This file is placed in the Public Domain.
 
-__version__ = 3
+__version__ = 2
 
 import os
 import queue

@@ -10,7 +10,7 @@ def readme():
 
 setup(
     name='opbot',
-    version='1',
+    version='2',
     url='https://github.com/bthate/opbot',
     author='Bart Thate',
     author_email='bthate@dds.nl',
