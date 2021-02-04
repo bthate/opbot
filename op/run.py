@@ -6,6 +6,7 @@ __version__ = 3
 
 import os, sys, time
 
+from .bsc import Basic, Test
 from .obj import Cfg
 from .prs import parse
 

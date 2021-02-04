@@ -76,7 +76,11 @@ class Default(Object):
 
 class Cfg(Default):
 
-     pass
+    def op(self, ops):
+        for o in ops:
+            if o in self.opts:
+                return True
+        return False
 
 class Ol(Object):
 

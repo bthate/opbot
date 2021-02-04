@@ -11,7 +11,6 @@ import sys
 import threading
 import time
 
-from .dbs import last
 from .obj import Cfg, Default, Object, Ol, get, update
 from .prs import parse
 from .thr import launch
@@ -117,10 +116,10 @@ class Handler(Object):
         self.cmds = Object()
         self.modnames = Object()
         self.names = Ol()
+        self.pkgs = []
         self.queue = queue.Queue()
         self.stopped = False
         self.table = Object()
-        Bus.add(self)
 
     def __str__(self):
         return str(self.cfg)
@@ -171,16 +170,17 @@ class Handler(Object):
     def init(self, mns, name="op"):
         thrs = []
         for mn in spl(mns):
-            try:
-                spec = importlib.util.find_spec("%s.%s" % (name, mn))
-            except ModuleNotFoundError:
-                continue
-            if spec:
-                mod = self.load("%s.%s" % (name, mn))
-                self.intro(mod)
-                func = getattr(mod, "init", None)
-                if func:
-                    thrs.append(func(self))
+            for name in self.pkgs:
+                try:
+                    spec = importlib.util.find_spec("%s.%s" % (name, mn))
+                except ModuleNotFoundError:
+                    continue
+                if spec:
+                    mod = self.load("%s.%s" % (name, mn))
+                    self.intro(mod)
+                    func = getattr(mod, "init", None)
+                    if func:
+                        thrs.append(func(self))
         return [t for t in thrs if t]
 
     def intro(self, mod):
@@ -222,9 +222,6 @@ class Handler(Object):
     def register(self, name, callback):
         self.cbs[name] = callback
 
-    def hup(self):
-        last(self.cfg)
-
     def say(self, channel, txt):
         self.direct(txt)
 
@@ -241,6 +238,7 @@ class Handler(Object):
                 mod = direct(pn)
             except ModuleNotFoundError:
                 continue
+            self.pkgs.append(pn)
             got = False
             for name, m in inspect.getmembers(mod, inspect.ismodule):
                 if pn in str(m):

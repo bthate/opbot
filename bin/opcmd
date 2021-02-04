@@ -3,44 +3,17 @@
 #
 # This file is placed in the Public Domain.
 
-import os
-import sys
-
-from op.hdl import Handler, cmd
-from op.run import cfg
+from op.run import Basic, cfg, execute, os, sys
 from op.utl import privileges
 
-class Mini(Handler):
-
-    def __init__(self):
-        super().__init__()
-        self.register("cmd", cmd)
-
-    def direct(self, txt):
-        print(txt)
-
-def execute(main):
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("")
-    except PermissionError as ex:
-        print(str(ex))
-
 def main():
-    try:
-        import opbot
-    except ImportError:
-        sys.path.insert(0, os.getcwd())
-        import opbot
+    if len(sys.argv) <= 1:
+        return 
     cfg.wd = "/var/lib/opbot/"
     privileges("opbot")
-    h = Mini()
-    h.load("op.cmd")
+    h = Basic()
     h.walk("opbot,opmod")
-    return h.cmd(" ".join(sys.argv[1:]))
-
-# runtime
+    h.cmd(" ".join(sys.argv[1:]))
 
 execute(main)
 os._exit(0)
