@@ -258,11 +258,6 @@ class Handler(Object):
         while not self.stopped:
             time.sleep(30.0)
 
-class Mini(Handler):
-
-    def direct(self, txt):
-        print(txt)
-
 def cmd(handler, obj):
     obj.parse()
     f = get(handler.cmds, obj.cmd, None)

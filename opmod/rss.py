@@ -5,8 +5,8 @@
 import urllib
 
 from op.clk import Repeater
-from op.dbs import all, last, last_match
-from op.obj import Cfg, Default, Object, get, save, update
+from op.dbs import all, find, last, last_match
+from op.obj import Cfg, Default, Object, edit, get, save, update
 from op.hdl import Bus
 from op.thr import launch
 from op.utl import get_tinyurl, get_url, strip_html, unescape

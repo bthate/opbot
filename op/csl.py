@@ -14,9 +14,10 @@ class Console(Handler):
         super().__init__()
         self.register("cmd", cmd)
         self.load("op.cmd")
-        
+
     def direct(self, txt):
-        print(txt)
+        if cfg.verbose:
+            print(txt)
 
     def input(self):
         while 1:
@@ -33,6 +34,16 @@ class Console(Handler):
     def start(self):
         super().start()
         launch(self.input)
+
+class CLI(Handler):
+
+    def __init__(self):
+        super().__init__()
+        self.register("cmd", cmd)
+
+    def direct(self, txt):
+        if cfg.verbose:
+            print(txt)
 
 def console(main):
     termsave()

@@ -7,7 +7,7 @@ OPBOT is a pure python3 IRC chat bot that can run as a background daemon
 for 24/7 a day presence in a IRC channel. It installs itself as a service so
 you can get it restarted on reboot. You can use it to display RSS feeds, act as a
 UDP to IRC gateway, program your own commands for it, have it log objects on
-disk and search them and scan emails for correspondence analysis. 
+disk and search. 
 
 OPBOT is placed in the Public Domain, no COPYRIGHT, no LICENSE.
 
