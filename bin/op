@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+# OPBOT - Object Programming (bin/op)
+#
+# this file is placed in the public domain
+
+from op.csl import Console, console
+from op.hdl import Handler, Mini
+from op.run import cfg, parse_cli, os
+from op.utl import opcheck, privileges
+
+def main():
+    cfg.wd = os.path.expanduser("~/.opbot")
+    privileges("opbot")
+    parse_cli()
+    c = Console()
+    c.walk("opmod")
+    c.walk("opbot")
+    if cfg.txt:
+        return c.cmd(cfg.otxt)
+    if opcheck("s", cfg):
+        c.init(cfg.mods, "opmod")
+        c.start()
+        c.wait()
+ 
+console(main)
