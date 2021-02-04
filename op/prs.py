@@ -203,15 +203,6 @@ def parse(o, txt):
     o.rest = " ".join(args[1:])
     return o
 
-def parse_cli(wd=None):
-    from .run import cfg
-    parse(cfg, " ".join(sys.argv[1:]))
-    cfg.sets.wd = cfg.wd = cfg.sets.wd or cfg.wd or wd
-    cfg.debug = "d" in cfg.opts
-    cfg.verbose = "v" in cfg.opts
-    assert cfg.wd
-    return cfg
-
 def parse_time(daystring):
     line = ""
     daystr = str(daystring)

@@ -6,8 +6,7 @@ import queue
 import threading
 
 from .obj import Default, Object
-from .run import cfg
-from .utl import get_exception, get_name
+from .utl import get_name
 
 class Thr(threading.Thread):
 
@@ -42,13 +41,7 @@ class Thr(threading.Thread):
             except TypeError:
                 pass
         self.setName(self._name)
-        if cfg.verbose:
-             print("launch %s(%s)" % (self._name, ",".join([str(x) for x in args if x])))
-        try:
-            self._result = func(*args)
-        except Exception as ex:
-            if cfg.verbose:
-                print(get_exception())
+        self._result = func(*args)
 
     def wait(self, timeout=None):
         super().join(timeout)

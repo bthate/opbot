@@ -125,6 +125,9 @@ class Handler(Object):
     def __str__(self):
         return str(self.cfg)
 
+    def announce(self, txt):
+        self.direct(txt)
+
     def clone(self, hdl):
         update(self.cmds, hdl.cmds)
         update(self.cbs, hdl.cbs)
@@ -254,6 +257,11 @@ class Handler(Object):
     def wait(self):
         while not self.stopped:
             time.sleep(30.0)
+
+class Mini(Handler):
+
+    def direct(self, txt):
+        print(txt)
 
 def cmd(handler, obj):
     obj.parse()
