@@ -21,7 +21,7 @@ from op.thr import launch
 from op.utl import locked
 
 def __dir__():
-    return ("Cfg", "DCC", "Event", "IRC", "User", "Users", "init", "cfg", "del", "met", "ops")
+    return ("Cfg", "DCC", "Event", "IRC", "User", "Users", "init", "cfg", "dlt", "met", "ops")
 
 def init(hdl):
     i = IRC()
@@ -96,6 +96,7 @@ class IRC(Handler):
         self.threaded = False
         self.verbose = False
         self.users = Users()
+        Bus.add(self)
 
     def _connect(self, server, port=6667):
         addr = socket.getaddrinfo(server, port, socket.AF_INET)[-1][-1]
