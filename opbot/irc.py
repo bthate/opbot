@@ -531,7 +531,7 @@ def dlt(event):
     if not event.args:
         return
     selector = {"user": event.args[0]}
-    for fn, o in find("mod.irc.User", selector):
+    for fn, o in find("opbot.irc.User", selector):
         o._deleted = True
         save(o)
         event.reply("ok")

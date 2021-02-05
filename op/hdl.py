@@ -121,9 +121,6 @@ class Handler(Object):
         self.stopped = False
         self.table = Object()
 
-    def __str__(self):
-        return str(self.cfg)
-
     def announce(self, txt):
         self.direct(txt)
 
@@ -132,6 +129,8 @@ class Handler(Object):
         update(self.cbs, hdl.cbs)
         update(self.modnames, hdl.modnames)
         update(self.names, hdl.names)
+        self.pkgs = hdl.pkgs
+        self.table = hdl.table
 
     def cmd(self, txt):
         self.register("cmd", cmd)
@@ -160,12 +159,7 @@ class Handler(Object):
                    if x and x.endswith(".py")
                    and not x.startswith("__")
                    and not x == "setup.py"]:
-            mnn = "%s.%s" % (name, mn)
-            try:
-                m = sys.modules[mnn]
-            except:
-                m = direct(mnn)
-            self.intro(m)
+            self.load("%s.%s" % (name, mn))
 
     def init(self, mns, name="op"):
         thrs = []
@@ -177,7 +171,6 @@ class Handler(Object):
                     continue
                 if spec:
                     mod = self.load("%s.%s" % (name, mn))
-                    self.intro(mod)
                     func = getattr(mod, "init", None)
                     if func:
                         thrs.append(func(self))
@@ -197,13 +190,10 @@ class Handler(Object):
                 self.names.append(o.__name__.lower(), t)
 
     def load(self, mn):
-        if mn in sys.modules:
-            return sys.modules[mn]
-        elif mn in self.table:
+        if mn in self.table:
             return self.table[mn]
-        else:
-            self.table[mn] = direct(mn)
-            self.intro(self.table[mn])
+        self.table[mn] = direct(mn)
+        self.intro(self.table[mn])
         return self.table[mn]
 
     def handler(self):
@@ -242,7 +232,7 @@ class Handler(Object):
             got = False
             for name, m in inspect.getmembers(mod, inspect.ismodule):
                 if pn in str(m):
-                    self.intro(m)
+                    self.load(m)
                     got = True
             if got:
                 continue

@@ -3,7 +3,7 @@
 #
 # This file is placed in the Public Domain.
 
-from .hdl import Command, Handler, cmd
+from .hdl import Bus, Command, Handler, cmd
 from .run import cfg
 from .thr import launch
 from .trm import termsave, termreset
@@ -14,6 +14,7 @@ class Console(Handler):
         super().__init__()
         self.register("cmd", cmd)
         self.load("op.cmd")
+        Bus.add(self)
 
     def direct(self, txt):
         if cfg.verbose:
