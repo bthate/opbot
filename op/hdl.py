@@ -185,7 +185,6 @@ class Handler(Object):
                     self.cmds[key] = o
                 self.modnames[key] = o.__module__
         for _key, o in inspect.getmembers(mod, inspect.isclass):
-            print(_key)
             if issubclass(o, Object):
                 t = "%s.%s" % (o.__module__, o.__name__)
                 self.names.append(o.__name__.lower(), t)

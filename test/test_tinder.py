@@ -4,7 +4,7 @@
 
 import os, unittest
 
-from op.csl import CLI
+from op.bsc import Test
 from op.obj import Object, get
 from op.hdl import Command, Handler, cmd
 from op.run import cfg
@@ -86,8 +86,6 @@ def do_cmd(cmd):
         events.append(e)
     return events
 
-h = CLI()
-h.register("cmd", cmd)
-h.load("op.cmd")
+h = Test()
 h.walk("opmod,opbot")
 h.start()

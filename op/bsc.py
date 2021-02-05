@@ -21,5 +21,5 @@ class Test(Core):
 
      def direct(self, txt):
          from .run import cfg
-         if cfg.verbose:
+         if cfg.op("v"):
              print(txt)

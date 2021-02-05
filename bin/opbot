@@ -3,8 +3,10 @@
 #
 # this file is placed in the public domain
 
-from op.csl import Console
-from op.run import Basic, cfg, execute, os, parse_cli
+import readline
+
+from op.csl import Console, console
+from op.run import Basic, cfg, os, parse_cli
 
 def main():
     cfg.verbose = True
@@ -22,4 +24,4 @@ def main():
         c.start()
         c.wait()
  
-execute(main)
+console(main)
