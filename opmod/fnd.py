@@ -4,6 +4,7 @@
  
 from op.obj import Object, format, get, keys
 from op.dbs import find, list_files
+from op.hdl import Bus
 from op.prs import elapsed
 from op.run import cfg
 from op.utl import fntime, get_names
@@ -14,10 +15,10 @@ def fnd(event):
         if fls:
             event.reply(" | ".join([x.split(".")[-1].lower() for x in fls]))
         return
-    nr = -1
     name = event.args[0]
-    names = get_names("op,opmod,opbot")
-    t = get(names, name, [name])
+    bot = Bus.by_orig(event.orig)
+    t = get(bot.names, name, [name])
+    nr = -1
     for otype in t:
         for fn, o in find(otype, event.prs.gets, event.prs.index, event.prs.timed):
             nr += 1

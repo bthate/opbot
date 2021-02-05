@@ -14,14 +14,14 @@ import _thread
 
 from op.dbs import find, last
 from op.obj import Cfg, Default, Object, format, get, save, update
-from op.hdl import Event, Handler, cmd
+from op.hdl import Bus, Event, Handler, cmd
 from op.prs import parse
 from op.run import cfg as maincfg
 from op.thr import launch
 from op.utl import locked
 
 def __dir__():
-    return ("Cfg", "DCC", "Event", "IRC", "USER", "init", "cfg", "del", "met", "ops")
+    return ("Cfg", "DCC", "Event", "IRC", "User", "Users", "init", "cfg", "del", "met", "ops")
 
 def init(hdl):
     i = IRC()

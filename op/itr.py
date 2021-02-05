@@ -50,6 +50,7 @@ def find_class(mod):
 
 def find_names(mod):
     tps = Ol()
+    print(mod)
     for _key, o in inspect.getmembers(mod, inspect.isclass):
         if issubclass(o, Object):
             t = "%s.%s" % (o.__module__, o.__name__)

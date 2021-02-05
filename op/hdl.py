@@ -14,7 +14,7 @@ import time
 from .obj import Cfg, Default, Object, Ol, get, update
 from .prs import parse
 from .thr import launch
-from .utl import direct, spl
+from .utl import direct, mods, spl
 
 def __dir__():
     return ("Bus", "Command", "Event", "Handler", "cmd")
@@ -185,6 +185,7 @@ class Handler(Object):
                     self.cmds[key] = o
                 self.modnames[key] = o.__module__
         for _key, o in inspect.getmembers(mod, inspect.isclass):
+            print(_key)
             if issubclass(o, Object):
                 t = "%s.%s" % (o.__module__, o.__name__)
                 self.names.append(o.__name__.lower(), t)
