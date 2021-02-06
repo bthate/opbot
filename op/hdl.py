@@ -229,13 +229,6 @@ class Handler(Object):
             except ModuleNotFoundError:
                 continue
             self.pkgs.append(pn)
-            got = False
-            for name, m in inspect.getmembers(mod, inspect.ismodule):
-                if pn in str(m):
-                    self.load(name)
-                    got = True
-            if got:
-                continue
             if "__file__" in dir(mod) and mod.__file__:
                 p = os.path.dirname(mod.__file__)
             else:

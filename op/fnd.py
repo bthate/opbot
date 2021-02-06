@@ -2,18 +2,21 @@
 #
 # This file is in the Public Domain.
  
-from op.obj import Object, format, get, keys
+from op.obj import Object, format, get, keys, time
 from op.dbs import find, list_files
 from op.hdl import Bus
 from op.prs import elapsed
 from op.run import cfg
 from op.utl import fntime, get_names
 
+def __dir__():
+    return ("fnd",)
+
 def fnd(event):
     if not event.args:
         fls = list_files(cfg.wd)
         if fls:
-            event.reply(" | ".join([x.split(".")[-1].lower() for x in fls]))
+            event.reply("|".join([x.split(".")[-1].lower() for x in fls]))
         return
     name = event.args[0]
     bot = Bus.by_orig(event.orig)

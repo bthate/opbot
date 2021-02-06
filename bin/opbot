@@ -14,8 +14,7 @@ def main():
     cfg.wd = os.path.expanduser("~/.opbot")
     parse_cli()
     h = Basic()
-    h.walk("op")
-    h.walk("opbot")
+    h.walk("opbot,op")
     if cfg.txt:
         return h.cmd(cfg.otxt)
     if cfg.op("s"):
