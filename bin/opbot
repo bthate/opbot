@@ -3,7 +3,8 @@
 #
 # this file is placed in the public domain
 
-import readline
+import os, readline, sys
+sys.path.insert(0, os.getcwd())
 
 from op.csl import Console, console
 from op.run import Basic, cfg, os, parse_cli
@@ -13,7 +14,7 @@ def main():
     cfg.wd = os.path.expanduser("~/.opbot")
     parse_cli()
     h = Basic()
-    h.walk("opmod")
+    h.walk("op")
     h.walk("opbot")
     if cfg.txt:
         return h.cmd(cfg.otxt)

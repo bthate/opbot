@@ -232,7 +232,7 @@ class Handler(Object):
             got = False
             for name, m in inspect.getmembers(mod, inspect.ismodule):
                 if pn in str(m):
-                    self.load(m)
+                    self.load(name)
                     got = True
             if got:
                 continue
