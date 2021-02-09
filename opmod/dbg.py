@@ -9,7 +9,7 @@ from op.dbs import find, last, list_files, last_match
 from op.obj import Object, get, update
 from op.hdl import Bus
 from op.prs import elapsed
-from op.run import cfg
+from op.run import cfg, starttime
 from op.utl import fntime, get_name
 
 def __dir__():
@@ -34,7 +34,7 @@ def thr(event):
         if get(o, "sleep", None):
             up = o.sleep - int(time.time() - o.state.latest)
         else:
-            up = int(time.time() - cfg.starttime)
+            up = int(time.time() - starttime)
         thrname = thr.getName()
         if not thrname:
             continue
@@ -42,9 +42,9 @@ def thr(event):
             result.append((up, thrname))
     res = []
     for up, txt in sorted(result, key=lambda x: x[0]):
-        res.append("%s %s" % (txt, elapsed(up)))
+        res.append("%s(%s)" % (txt.lower(), elapsed(up)))
     if res:
-        event.reply(" | ".join(res))
+        event.reply("|".join(res))
 
 def upt(event):
-    return elapsed(time.time() - cfg.starttime)
+    return elapsed(time.time() - starttime)

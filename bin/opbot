@@ -10,23 +10,24 @@ from op.obj import Object, format, load, register, save, update
 from op.prs import parse
 from op.run import cfg, parse_cli
 from op.thr import launch
+from op.utl import privileges
+
+cfg.wd = os.path.expanduser("~/.opbot")
+cfg.md = os.path.join(cfg.wd, "mod")
 
 def main():
-    cfg.wd = os.path.expanduser("~/.opbot")
-    cfg.md = os.path.join(cfg.wd, "mod")
     parse_cli()
     if cfg.op("s"):
         save(cfg)
-    elif cfg.op("l"):
+    if cfg.op("l"):
         last(cfg)
-    if cfg.op("h"):
-        import mod.hlp
-        print(mod.hlp.__doc__)
-        print(format(cfg))
-        return
+    if cfg.op("r"):
+        cfg.wd = "/var/lib/opbot/"
+        cfg.md = "/var/lib/opbot/mod"
+        privileges("opbot")
     h = Basic()
     h.fromdir(cfg.md)
-    h.walk("gcd,op,mod")
+    h.walk("opbot")
     if cfg.txt:
         return h.cmd(cfg.otxt)
     h.start()

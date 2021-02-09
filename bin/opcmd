@@ -1,19 +1,37 @@
 #!/usr/bin/env python3
-# OPBOT - operbot (bin/opcmd)
-#
 # This file is placed in the Public Domain.
 
-from op.run import Basic, cfg, execute, os, sys
-from op.utl import privileges
+import os, readline, shutil, sys
+
+from op.bsc import Basic
+from op.csl import console
+from op.dbs import last
+from op.obj import register
+from op.run import cfg, parse_cli
+
+def cp(event):
+    if not os.path.exists(cfg.md):
+        os.mkdir(cfg.md)
+    fns = []
+    mpath = os.path.abspath(os.path.join(os.getcwd(), "mod"))
+    for fn in os.listdir(mpath):
+        if not fn.endswith("py"):
+            continue
+        fns.append("mod/%s" % fn)
+    for fn in fns:
+        fnn = os.path.join(cfg.wd, fn)
+        shutil.copy2(fn, fnn)
+    event.reply("ok")
 
 def main():
-    if len(sys.argv) <= 1:
-        return 
     cfg.wd = "/var/lib/opbot/"
-    privileges("opbot")
+    cfg.md = os.path.join(cfg.wd, "mod")
+    parse_cli()
     h = Basic()
-    h.walk("opbot,opmod")
-    h.cmd(" ".join(sys.argv[1:]))
+    register(h.cmds, "cp", cp)
+    h.walk("mod")
+    h.fromdir(cfg.md)
+    return h.cmd(" ".join(sys.argv[1:]))
 
-execute(main)
-os._exit(0)
+if __name__ == "__main__":
+    console(main)

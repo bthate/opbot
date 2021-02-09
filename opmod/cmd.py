@@ -26,7 +26,7 @@ def flt(event):
         return
     except (TypeError, IndexError):
         pass
-    event.reply("|".join([get_name(o) for o in Bus.objs]))
+    event.reply(",".join([get_name(o) for o in Bus.objs]))
 
 def thr(event):
     psformat = "%s %s"
@@ -47,6 +47,6 @@ def thr(event):
             result.append((up, thrname))
     res = []
     for up, txt in sorted(result, key=lambda x: x[0]):
-        res.append(txt)
+        res.append("%s(%s)" % (txt, elapsed(up)))
     if res:
-        event.reply("|".join(res))
+        event.reply(",".join(res))
