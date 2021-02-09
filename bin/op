@@ -1,21 +1,35 @@
 #!/usr/bin/env python3
 # This file is placed in the Public Domain.
 
-import os, readline
+import os, readline, shutil
 
 from op.bsc import Basic
 from op.csl import console
 from op.run import cfg, parse_cli
 
-wd = os.path.expanduser("~/.opbot")
+cfg.wd = os.path.expanduser("~/.opbot")
+cfg.md = os.path.join(cfg.wd, "mod")
+
+def copy(event):
+    if not os.path.exists(cfg.md):
+        os.mkdir(cfg.md)
+    fns = []
+    p = os.path.join(os.getcwd(), "mod")
+    for fn in os.listdir(p):
+        if not fn.endswith("py"):
+            continue
+        fns.append(fn)
+    for fn in fns:
+        fnn = os.path.join(cfg.md, fn)
+        shutil.copy2("mod/%s" % fn, fnn)
+    event.reply("ok")
 
 def main():
-    cfg.wd = wd
-    cfg.md = os.path.join(os.getcwd() , "mod")
     parse_cli()
     h = Basic()
+    h.add("copy", copy)
     h.fromdir(cfg.md)
-    h.walk("op")
+    h.walk("opbot,opmod")
     h.walk("mod")
     return h.cmd(cfg.otxt)
 

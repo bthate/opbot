@@ -117,6 +117,9 @@ class Handler(Object):
         self.stopped = False
         self.table = Object()
 
+    def add(self, cmd, func):
+        self.cmds[cmd] = func
+
     def announce(self, txt):
         self.direct(txt)
 

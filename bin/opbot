@@ -27,7 +27,7 @@ def main():
         privileges("opbot")
     h = Basic()
     h.fromdir(cfg.md)
-    h.walk("op,opbot")
+    h.walk("opbot,opmod")
     if cfg.txt:
         return h.cmd(cfg.otxt)
     h.start()

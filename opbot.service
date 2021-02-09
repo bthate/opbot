@@ -7,7 +7,7 @@ DynamicUser=True
 StateDirectory=opbot
 LogsDirectory=opbot
 CacheDirectory=opbot
-ExecStart=/usr/local/bin/opd 
+ExecStart=/usr/local/bin/opbot -w -l
 CapabilityBoundingSet=CAP_NET_RAW
 
 [Install]
