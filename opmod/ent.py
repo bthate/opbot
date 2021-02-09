@@ -1,5 +1,3 @@
-# OPMOD - Object Programming Modules (cmd.py)
-#
 # This file is placed in the Public Domain.
 
 from op.dbs import find

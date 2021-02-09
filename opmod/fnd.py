@@ -1,5 +1,3 @@
-# OPMOD - Object Programming Modules (fnd.py)
-#
 # This file is in the Public Domain.
  
 from op.obj import Object, format, get, keys
@@ -7,7 +5,7 @@ from op.dbs import find, list_files
 from op.hdl import Bus
 from op.prs import elapsed
 from op.run import cfg
-from op.utl import fntime, get_names
+from op.utl import fntime, get_names, time
 
 def __dir__():
     return ("fnd",)
