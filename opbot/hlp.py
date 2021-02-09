@@ -27,10 +27,10 @@ EXAMPLES
 
 OPTIONS
         -c		start console
-        -l		read config
-        -r		use /var/lib/genocide/
+        -l		load config
+        -r		use /var/lib/opbot/
         -s              save config
         -h              print this message
         -v              be verbose
-        -z		use ~/.genocide
+        -w		wait 
 """
