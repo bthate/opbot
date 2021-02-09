@@ -26,11 +26,13 @@ def copy(event):
 
 def main():
     parse_cli()
+    if cfg.op("r"):
+        cfg.wd = "/var/lib/opbot/"
+        cfg.md = os.path.join(cfg.wd, "mod")
     h = Basic()
-    h.add("copy", copy)
     h.fromdir(cfg.md)
-    h.walk("opbot,opmod")
-    h.walk("mod")
+    h.add("copy", copy)
+    h.walk("opbot,opmod,mod")
     return h.cmd(cfg.otxt)
 
 console(main)
