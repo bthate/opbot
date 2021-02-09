@@ -2,8 +2,8 @@
 
 import atexit, sys, termios
 
-from .hdl import Bus, Command, Handler, cmd
-from .thr import launch
+from op.hdl import Bus, Command, Handler, cmd
+from op.thr import launch
 
 def __dir__():
     return ("CLI", "Console", "init", "console")
