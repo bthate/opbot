@@ -1,8 +1,4 @@
-# OPBOT - Object Programming Bot (irc.py)
-#
 # This file is placed in the Public Domain.
-
-__version__ = 2
 
 import os
 import queue
@@ -19,6 +15,8 @@ from op.prs import parse
 from op.run import cfg as maincfg
 from op.thr import launch
 from op.utl import locked
+
+from .ver import __version__
 
 def __dir__():
     return ("Cfg", "DCC", "Event", "IRC", "User", "Users", "init", "cfg", "dlt", "met", "ops")

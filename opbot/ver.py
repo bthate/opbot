@@ -1,8 +1,6 @@
-# OP - Object Programming Library (ver.py)
-#
 # This file is in the Public Domain
 
-from  .irc import __version__
+__version__ = 3
 
 def ver(event):
     event.reply("OPBOT %s" % __version__)
