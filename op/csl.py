@@ -1,24 +1,30 @@
-#!/usr/bin/python3
-# OPBOT - Object Programming Bot (csl.py)
-#
 # This file is placed in the Public Domain.
 
+import atexit, sys, termios
+
 from .hdl import Bus, Command, Handler, cmd
-from .run import cfg
 from .thr import launch
-from .trm import termsave, termreset
+
+def __dir__():
+    return ("CLI", "Console", "init", "console")
+
+resume = {}
+
+def init(h):
+    c = Console()
+    c.clone(h)
+    c.start()
+    return c
 
 class Console(Handler):
 
     def __init__(self):
         super().__init__()
         self.register("cmd", cmd)
-        self.load("op.cmd")
         Bus.add(self)
 
     def direct(self, txt):
-        if cfg.verbose:
-            print(txt)
+        print(txt)
 
     def input(self):
         while 1:
@@ -43,8 +49,25 @@ class CLI(Handler):
         self.register("cmd", cmd)
 
     def direct(self, txt):
-        if cfg.verbose:
-            print(txt)
+        print(txt)
+
+def termsetup(fd):
+    return termios.tcgetattr(fd)
+
+def termreset():
+    if "old" in resume:
+        try:
+            termios.tcsetattr(resume["fd"], termios.TCSADRAIN, resume["old"])
+        except termios.error:
+            pass
+
+def termsave():
+    try:
+        resume["fd"] = sys.stdin.fileno()
+        resume["old"] = termsetup(sys.stdin.fileno())
+        atexit.register(termreset)
+    except termios.error:
+        pass
 
 def console(main):
     termsave()
@@ -56,10 +79,3 @@ def console(main):
         print(str(ex))
     finally:
         termreset()
-
-def init(handler):
-    c = Console()
-    c.load("op.cmd")
-    c.walk(cfg.mods)
-    c.start()
-    return c

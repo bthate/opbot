@@ -2,7 +2,7 @@
 #
 # This file is in the Public Domain.
  
-from op.obj import Object, format, get, keys, time
+from op.obj import Object, format, get, keys
 from op.dbs import find, list_files
 from op.hdl import Bus
 from op.prs import elapsed

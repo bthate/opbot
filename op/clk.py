@@ -1,5 +1,3 @@
-# OPLIB - Object Programming Library (clk.py)
-#
 # This file is placed in the Public Domain.
 
 import threading
@@ -7,6 +5,7 @@ import time
 
 from .obj import Object
 from .thr import launch
+from .utl import get_name
 
 def __dir__():
     return ("Repeater", "Timer")
@@ -29,7 +28,7 @@ class Timer(Object):
 
     def start(self):
         if not self.name:
-            self.name = op.get_name(self.func)
+            self.name = get_name(self.func)
         timer = threading.Timer(self.sleep, self.run, self.args, self.kwargs)
         timer.setName(self.name)
         timer.setDaemon(True)

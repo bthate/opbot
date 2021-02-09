@@ -1,21 +1,7 @@
-# OPLIB - Object Programming Library (utl.py)
-#
 # This file is placed in the Public Domain.
 
-import datetime
-import getpass
-import importlib
-import inspect
-import os
-import pwd
-import random
-import re
-import socket
-import sys
-import time
-import traceback
-import types
-import urllib
+import datetime, getpass, importlib, inspect, os, pwd, random
+import re, socket, sys, time, traceback, types, urllib
 
 from urllib.parse import quote_plus, urlencode
 from urllib.request import Request, urlopen
@@ -38,10 +24,6 @@ timestrings = [
     "%d, %b %Y %H:%M:%S +0000"
 ]
 
-def banner():
-    from .run import __version__
-    return "OPLIB %s - Object Programming Library started at %s" % (__version__, time.ctime(time.time()))
-
 def cdir(path):
     if os.path.exists(path):
         return
@@ -60,14 +42,7 @@ def day():
     return str(datetime.datetime.today()).split()[0]
 
 def direct(name, pname=''):
-    try:
-        return sys.modules[name]
-    except KeyError:
-        pass
-    try:
-        return importlib.import_module(name, pname)
-    except ModuleNotFoundError:
-        pass
+    return importlib.import_module(name, pname)
 
 def file_time(timestamp):
     s = str(datetime.datetime.fromtimestamp(timestamp))
@@ -136,8 +111,8 @@ def get_names(pkgs):
     return res
 
 def get_tinyurl(url):
-    import op
-    if op.debug:
+    from .run import cfg
+    if cfg.debug:
         return []
     postarray = [
         ('submit', 'submit'),
@@ -163,15 +138,24 @@ def get_type(o):
     return str(type(o)).split()[-1][1:-2]
 
 def get_url(url):
-    import op
-    if op.debug:
-        return 
+    from .run import cfg
+    if cfg.debug:
+        return
     url = urllib.parse.urlunparse(urllib.parse.urlparse(url))
     req = urllib.request.Request(url)
     req.add_header('User-agent', useragent(url))
     response = urllib.request.urlopen(req)
     response.data = response.read()
     return response
+
+def has_mod(fqn):
+    try:
+        spec = importlib.util.find_spec(fqn)
+        if spec:
+            return True
+    except ModuleNotFoundError:
+        pass
+    return False
 
 def locked(l):
     def lockeddec(func, *args, **kwargs):
@@ -202,19 +186,26 @@ def mods(mn):
 def opcheck(ops, cfg):
     for o in ops:
         if o in cfg.opts:
-             return True    
+            return True
     return False
 
 def privileges(name=None):
     if os.getuid() != 0:
         return
     if name is None:
-        name = getpass.getuser()
-    pwnam = pwd.getpwnam(name)
+        try:
+            name = getpass.getuser()
+        except KeyError:
+            pass
+    try:
+        pwnam = pwd.getpwnam(name)
+    except KeyError:
+        return False
     os.setgroups([])
     os.setgid(pwnam.pw_gid)
     os.setuid(pwnam.pw_uid)
     old_umask = os.umask(0o22)
+    return True
 
 def root():
     if os.geteuid() != 0:

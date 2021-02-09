@@ -1,23 +1,19 @@
-# OPLIB - Object Programming Library (run.py)
-#
 # This file is placed in the Public Domain.
 
-__version__ = 3
+import sys, time
 
-import os, sys, time
-
-from .bsc import Basic, Test
 from .obj import Cfg
 from .prs import parse
 
 cfg = Cfg()
-cfg.starttime = time.time()
 cfg.debug = False
 cfg.verbose = False
 cfg.mods = ""
 cfg.opts = ""
 cfg.md = ""
 cfg.wd = ""
+
+starttime = time.time()
 
 def execute(main):
     try:
@@ -29,6 +25,8 @@ def execute(main):
 
 def parse_cli():
     parse(cfg, " ".join(sys.argv[1:]))
+    if cfg.sets:
+        cfg.changed = True
     cfg.sets.wd = cfg.wd = cfg.sets.wd or cfg.wd
-    assert cfg.wd
+    cfg.mods = cfg.sets.mods
     return cfg

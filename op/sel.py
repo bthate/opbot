@@ -1,20 +1,14 @@
-# OPLIB - Object Programming Library (self.py)
-#
 # This file is placed in the Public Domain.
 
-import select
-import selectors
-import threading
-import time
-import sys
+import selectors, time
 
 from .hdl import Event, Handler
 from .thr import launch
-from .utl import get_exception, get_name
+from .utl import get_name
 
 class EDISCONNECT(Exception):
 
-     pass
+    pass
 
 class Select(Handler):
 
@@ -31,7 +25,7 @@ class Select(Handler):
                     break
                 continue
             for key, mask in sel:
-                e =  self.poll()
+                e = self.poll()
                 self.put(e)
                 e.wait()
             if once:
@@ -44,9 +38,9 @@ class Select(Handler):
 
     def register_fd(self, fd):
         try:
-             fd = fd.fileno()
-        except:
-             fd = fd
+            fd = fd.fileno()
+        except AttributeError:
+            fd = fd
         self._select.register(fd, selectors.EVENT_READ|selectors.EVENT_WRITE)
         return fd
 

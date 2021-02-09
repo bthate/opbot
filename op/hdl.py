@@ -1,23 +1,18 @@
-# OPLIB - Object Programming Library (hdl.py)
-#
 # This file is placed in the Public Domain.
 
-import inspect
-import importlib
-import importlib.util
-import os
-import queue
-import sys
-import threading
-import time
+import inspect, os, queue, sys, threading, time
 
 from .obj import Cfg, Default, Object, Ol, get, update
 from .prs import parse
 from .thr import launch
-from .utl import direct, mods, spl
+from .utl import direct, has_mod, locked, spl
+
+import _thread
 
 def __dir__():
     return ("Bus", "Command", "Event", "Handler", "cmd")
+
+loadlock = _thread.allocate_lock()
 
 class Bus(Object):
 
@@ -118,6 +113,7 @@ class Handler(Object):
         self.names = Ol()
         self.pkgs = []
         self.queue = queue.Queue()
+        self.started = []
         self.stopped = False
         self.table = Object()
 
@@ -141,7 +137,7 @@ class Handler(Object):
 
     def direct(self, txt):
         pass
-        
+
     def dispatch(self, event):
         if event.type and event.type in self.cbs:
             self.cbs[event.type](self, event)
@@ -151,28 +147,35 @@ class Handler(Object):
             return
         if not os.path.exists(pkgpath):
             return
-        path = os.path.dirname(pkgpath)
+        path, _n = os.path.split(pkgpath)
+        sys.path.insert(0, path)
         if not name:
             name = pkgpath.split(os.sep)[-1]
-        sys.path.insert(0, path)
+        if not has_mod(name):
+            return
+        mod = direct(name)
+        self.pkgs.append(name)
         for mn in [x[:-3] for x in os.listdir(pkgpath)
                    if x and x.endswith(".py")
                    and not x.startswith("__")
                    and not x == "setup.py"]:
-            self.load("%s.%s" % (name, mn))
+            fqn = "%s.%s" % (name, mn)
+            if not has_mod(fqn):
+                continue
+            self.load(fqn)
 
-    def init(self, mns, name="op"):
+    def init(self, mns, name=""):
         thrs = []
         for mn in spl(mns):
-            for name in self.pkgs:
-                try:
-                    spec = importlib.util.find_spec("%s.%s" % (name, mn))
-                except ModuleNotFoundError:
+            for pn in self.pkgs:
+                fqn = "%s.%s" % (pn, mn)
+                if not has_mod(fqn):
                     continue
-                if spec:
-                    mod = self.load("%s.%s" % (name, mn))
+                if not mn in self.started:
+                    mod = self.load(fqn)
                     func = getattr(mod, "init", None)
                     if func:
+                        self.started.append(mn)
                         thrs.append(func(self))
         return [t for t in thrs if t]
 
@@ -187,8 +190,10 @@ class Handler(Object):
         for _key, o in inspect.getmembers(mod, inspect.isclass):
             if issubclass(o, Object):
                 t = "%s.%s" % (o.__module__, o.__name__)
-                self.names.append(o.__name__.lower(), t)
+                if o.__name__.lower() not in self.names:
+                    self.names.append(o.__name__.lower(), t)
 
+    @locked(loadlock)
     def load(self, mn):
         if mn in self.table:
             return self.table[mn]
@@ -224,10 +229,9 @@ class Handler(Object):
 
     def walk(self, pkgnames):
         for pn in spl(pkgnames):
-            try:
-                mod = direct(pn)
-            except ModuleNotFoundError:
+            if not has_mod(pn):
                 continue
+            mod = direct(pn)
             self.pkgs.append(pn)
             if "__file__" in dir(mod) and mod.__file__:
                 p = os.path.dirname(mod.__file__)

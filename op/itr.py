@@ -1,13 +1,8 @@
-# OPLIB - Object Programming Library (itr.py)
-#
 # This file is placed in the Public Domain.
 
-import importlib
 import inspect
-import pkgutil
 
 from .obj import Object, Ol
-from .utl import direct
 
 def find_cmds(mod):
     cmds = Object()
@@ -50,7 +45,6 @@ def find_class(mod):
 
 def find_names(mod):
     tps = Ol()
-    print(mod)
     for _key, o in inspect.getmembers(mod, inspect.isclass):
         if issubclass(o, Object):
             t = "%s.%s" % (o.__module__, o.__name__)

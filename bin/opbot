@@ -1,27 +1,39 @@
 #!/usr/bin/env python3
-# OPBOT - Object Programming Bot (bin/opbot)
-#
-# this file is placed in the public domain
+# This file is placed in the Public Domain.
 
-import os, readline, sys
-sys.path.insert(0, os.getcwd())
+import os, readline, shutil, sys
 
-from op.csl import Console, console
-from op.run import Basic, cfg, os, parse_cli
+from op.bsc import Basic
+from op.csl import console
+from op.dbs import last
+from op.obj import Object, format, load, register, save, update
+from op.prs import parse
+from op.run import cfg, parse_cli
+from op.thr import launch
 
 def main():
-    cfg.verbose = True
     cfg.wd = os.path.expanduser("~/.opbot")
+    cfg.md = os.path.join(cfg.wd, "mod")
     parse_cli()
+    if cfg.op("s"):
+        save(cfg)
+    elif cfg.op("l"):
+        last(cfg)
+    if cfg.op("h"):
+        import mod.hlp
+        print(mod.hlp.__doc__)
+        print(format(cfg))
+        return
     h = Basic()
-    h.walk("opbot,op")
+    h.fromdir(cfg.md)
+    h.walk("gcd,op,mod")
     if cfg.txt:
         return h.cmd(cfg.otxt)
-    if cfg.op("s"):
-        c = Console()
-        c.clone(h)
-        c.init(cfg.mods)
-        c.start()
-        c.wait()
- 
+    h.start()
+    h.init(cfg.mods)
+    if cfg.op("c"):
+        h.init("csl")
+    if cfg.op("cw"):
+        h.wait()
+
 console(main)

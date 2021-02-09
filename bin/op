@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
-# OPBOT - Object Programming (bin/op)
-#
-# this file is placed in the public domain
+# This file is placed in the Public Domain.
 
-from op.run import Basic, cfg, execute, parse_cli, os
+import os, readline
+
+from op.bsc import Basic
+from op.csl import console
+from op.run import cfg, parse_cli
+
+wd = os.path.expanduser("~/.opbot")
 
 def main():
-    cfg.wd = os.path.expanduser("~/.opbot")
-    cfg.verbose = True
+    cfg.wd = wd
+    cfg.md = os.path.join(os.getcwd() , "mod")
     parse_cli()
-    if not cfg.txt:
-        return
     h = Basic()
-    h.walk("opmod")
-    h.walk("opbot")
-    h.cmd(cfg.otxt)
+    h.fromdir(cfg.md)
+    h.walk("op")
+    h.walk("mod")
+    return h.cmd(cfg.otxt)
 
-execute(main)
+console(main)

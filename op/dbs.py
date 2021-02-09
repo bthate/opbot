@@ -1,15 +1,8 @@
-# OPLIB - Object Programming Library (dbs.py)
-#
-# this file is placed in the public domain
+# This file is placed in the Public Domain.
 
-import os
-import threading
-import time
-
-from .obj import hook, search, update
-from .prs import elapsed
+from .obj import hook, search, update, os
 from .run import cfg
-from .utl import fntime, get_names, get_type
+from .utl import fntime, get_type
 
 def __dir__():
     return ("all", "deleted", "every", "find", "find_event", "fnd", "last", "last_match", "last_type", "last_fn")

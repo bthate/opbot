@@ -1,9 +1,6 @@
-# OPLIB - Object Programming Library (thr.py)
-#
 # This file is placed in the Public Domain.
 
-import queue
-import threading
+import queue, threading
 
 from .obj import Default, Object
 from .utl import get_name
