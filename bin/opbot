@@ -4,7 +4,7 @@
 """OPBOT(1)			   User Commands 		        OPBOT(1)
 
 NAME
-        OPBOT - operbot.
+        OPBOT - using the law to admininster poison equals genocide.
 
 SYNOPSIS
         opbot <cmd> [mods=mod1,mod2] [-c] [-h] -[l] [-r] [-v] [-w]
@@ -13,11 +13,9 @@ SYNOPSIS
         
 DESCRIPTION
         OPBOT is a pure python3 IRC chat bot that can run as a background daemon
-        for 24/7 a day presence in a IRC channel. It installs itself as a
-        service so you can get it restarted on reboot. 
-        
-        You can use it to display RSS feeds, program your own commands for 
-        it, have it log objects on disk and search. 
+        for 24/7 a day presence in a IRC channel. You can use it to display RSS
+        feeds, program your own commands for  it, have it log objects on disk and
+        search. 
 
         If you want to run the bot 24/7 you can install OPBOT as a service for
         the systemd daemon. You can do this by copying the following into
@@ -72,21 +70,22 @@ def main():
         last(cfg)
     if cfg.op("r"):
         cfg.wd = "/var/lib/opbot/"
-        cfg.md = "/var/lib/opbot/mod"
+        cfg.md = "/var/lib/opbot/mod/"
         privileges("opbot")
     h = Basic()
     h.fromdir(cfg.md)
     h.load("opmod.cmd")
-    h.load("opbot.irc")
-    h.load("opmod.rss")
-    h.load("opmod.sys")
     if cfg.txt:
         return h.cmd(cfg.otxt)
-    h.start()
-    h.init(cfg.mods)
     if cfg.op("c"):
         h.load("opmod.csl")
+        h.load("opmod.sys")
         h.init("csl")
+    if cfg.op("i"):
+        h.load("opmod.irc")
+        cfg.mods += ",irc"
+    h.start()
+    launch(h.init, cfg.mods)
     if cfg.op("cw"):
         h.wait()
 

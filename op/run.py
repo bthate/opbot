@@ -2,17 +2,11 @@
 
 import sys, time
 
-from .obj import Cfg
+from .obj import Cfg, save
 from .prs import parse
 from .trm import termsave, termreset
 
 cfg = Cfg()
-cfg.debug = False
-cfg.verbose = False
-cfg.mods = ""
-cfg.opts = ""
-cfg.md = ""
-cfg.wd = ""
 
 starttime = time.time()
 
@@ -35,10 +29,16 @@ def execute(main):
     except PermissionError as ex:
         print(str(ex))
 
-def parse_cli():
-    parse(cfg, " ".join(sys.argv[1:]))
-    if cfg.sets:
+def parse_cli(use_last=False):
+    from .dbs import last
+    if use_last:
+       last(cfg)
+    c = Cfg()
+    parse(c, " ".join(sys.argv[1:]))
+    if c.sets:
         cfg.changed = True
-    cfg.sets.wd = cfg.wd = cfg.sets.wd or cfg.wd
-    cfg.mods = cfg.sets.mods
+    cfg.sets.wd = cfg.wd = c.sets.wd or cfg.wd
+    cfg.mods = c.sets.mods or cfg.mods
+    if cfg.changed and use_last:
+        save(cfg)
     return cfg

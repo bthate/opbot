@@ -14,7 +14,7 @@ from op.run import cfg, starttime
 from op.utl import fntime, get_name
 
 def __dir__():
-    return ("flt", "set", "sys", "thr", "upt")
+    return ("flt", "thr", "upt")
 
 def flt(event):
     try:
@@ -23,16 +23,6 @@ def flt(event):
     except (TypeError, IndexError):
         pass
     event.reply(" | ".join([get_name(o) for o in Bus.objs]))
-
-def set(event):
-    p = Object()
-    parse(p, event.rest)
-    update(cfg, p)
-    save(cfg)
-    event.reply("ok")
-
-def sys(event):
-    event.reply(format(cfg))
 
 def thr(event):
     psformat = "%s %s"
@@ -58,4 +48,4 @@ def thr(event):
         event.reply(" | ".join(res))
 
 def upt(event):
-    return elapsed(time.time() - starttime)
+    event.reply(elapsed(time.time() - starttime))
