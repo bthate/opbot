@@ -76,10 +76,10 @@ def main():
         cfg.md = "/var/lib/opbot/mod"
         privileges("opbot")
     h = Basic()
-    h.pkgs = ["opmod", "opbot"]
     h.fromdir(cfg.md)
-    h.load("opbot.irc")
+    h.load("opmod.cmd")
     h.load("opmod.rss")
+    h.load("opbot.irc")
     if cfg.txt:
         return h.cmd(cfg.otxt)
     h.start()

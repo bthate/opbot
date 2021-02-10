@@ -157,7 +157,6 @@ class Handler(Object):
         if not has_mod(name):
             return
         mod = direct(name)
-        self.pkgs.append(name)
         for mn in [x[:-3] for x in os.listdir(pkgpath)
                    if x and x.endswith(".py")
                    and not x.startswith("__")
@@ -170,8 +169,10 @@ class Handler(Object):
     def init(self, mns, name=""):
         thrs = []
         for mn in spl(mns):
+            print(self.pkgs)
             for pn in self.pkgs:
                 fqn = "%s.%s" % (pn, mn)
+                print(fqn)
                 if not has_mod(fqn):
                     continue
                 if not mn in self.started:
@@ -200,6 +201,9 @@ class Handler(Object):
     def load(self, mn):
         if mn in self.table:
             return self.table[mn]
+        pn, mnn = mn.rsplit(".", 1)
+        if pn and pn not in self.pkgs:
+            self.pkgs.append(pn)
         self.table[mn] = direct(mn)
         self.intro(self.table[mn])
         return self.table[mn]
@@ -235,7 +239,6 @@ class Handler(Object):
             if not has_mod(pn):
                 continue
             mod = direct(pn)
-            self.pkgs.append(pn)
             if "__file__" in dir(mod) and mod.__file__:
                 p = os.path.dirname(mod.__file__)
             else:

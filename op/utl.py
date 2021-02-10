@@ -153,7 +153,7 @@ def has_mod(fqn):
         spec = importlib.util.find_spec(fqn)
         if spec:
             return True
-    except ModuleNotFoundError:
+    except (ValueError, ModuleNotFoundError):
         pass
     return False
 
