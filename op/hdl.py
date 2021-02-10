@@ -169,10 +169,8 @@ class Handler(Object):
     def init(self, mns, name=""):
         thrs = []
         for mn in spl(mns):
-            print(self.pkgs)
             for pn in self.pkgs:
                 fqn = "%s.%s" % (pn, mn)
-                print(fqn)
                 if not has_mod(fqn):
                     continue
                 if not mn in self.started:
