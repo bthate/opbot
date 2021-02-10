@@ -1,7 +1,5 @@
 # This file is placed in the Public Domain.
 
-__version__ = 2
-
 import os, queue, socket, textwrap
 import time, threading, _thread
 
@@ -14,6 +12,7 @@ from op.thr import launch
 from op.utl import locked
 
 from .usr import Users
+from .ver import __version__
 
 def __dir__():
     return ("Cfg", "DCC", "Event", "IRC", "init")

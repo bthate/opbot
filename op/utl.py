@@ -1,7 +1,8 @@
 # This file is placed in the Public Domain.
 
-import datetime, getpass, importlib, inspect, os, pwd, random
+import datetime, getpass, inspect, os, pwd, random
 import re, socket, sys, time, traceback, types, urllib
+import importlib, importlib.util
 
 from urllib.parse import quote_plus, urlencode
 from urllib.request import Request, urlopen

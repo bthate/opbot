@@ -34,7 +34,7 @@ class Users(Object):
 
     def get_users(self, origin=""):
         s = {"user": origin}
-        return find("mod.irc.User", s)
+        return find("opbot.usr.User", s)
 
     def get_user(self, origin):
         u = list(self.get_users(origin))
@@ -69,4 +69,3 @@ class Users(Object):
             user.perms.append(permission.upper())
             save(user)
         return user
-

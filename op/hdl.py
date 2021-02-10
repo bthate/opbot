@@ -257,7 +257,6 @@ class Handler(Object):
 
 def cmd(handler, obj):
     obj.parse()
-    print(obj)
     f = get(handler.cmds, obj.cmd, None)
     res = None
     if f:
