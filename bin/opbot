@@ -77,8 +77,9 @@ def main():
     h = Basic()
     h.fromdir(cfg.md)
     h.load("opmod.cmd")
-    h.load("opmod.rss")
     h.load("opbot.irc")
+    h.load("opmod.rss")
+    h.load("opmod.sys")
     if cfg.txt:
         return h.cmd(cfg.otxt)
     h.start()

@@ -31,12 +31,12 @@ class Cfg(Cfg):
 
     def __init__(self):
         super().__init__()
-        self.channel = "#genocide"
-        self.nick = "genocide"
+        self.channel = "#opbot"
+        self.nick = "opbot"
         self.port = 6667
         self.server = "localhost"
         self.realname = "using the law to administer poison equals genocide"
-        self.username = "gcd"
+        self.username = "opbot"
 
 class Event(Event):
 
@@ -510,8 +510,6 @@ class Users(Object):
             save(user)
         return user
 
-# commands
-
 def cfg(event):
     c = Cfg()
     last(c)
@@ -532,6 +530,9 @@ def dlt(event):
         break
 
 def met(event):
+    print(event)
+    if not event.args:
+        return
     u = User()
     u.user = event.rest
     u.perms = ["USER"]
