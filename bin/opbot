@@ -52,11 +52,10 @@ OPTIONS
 import os, readline, shutil, sys
 
 from op.bsc import Basic
-from op.csl import console
 from op.dbs import last
 from op.obj import Object, format, load, register, save, update
 from op.prs import parse
-from op.run import cfg, parse_cli
+from op.run import console, cfg, parse_cli
 from op.thr import launch
 from op.utl import privileges
 

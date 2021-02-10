@@ -4,6 +4,7 @@ import sys, time
 
 from .obj import Cfg
 from .prs import parse
+from .trm import termsave, termreset
 
 cfg = Cfg()
 cfg.debug = False
@@ -14,6 +15,17 @@ cfg.md = ""
 cfg.wd = ""
 
 starttime = time.time()
+
+def console(main):
+    termsave()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except PermissionError as ex:
+        print(str(ex))
+    finally:
+        termreset()
 
 def execute(main):
     try:
