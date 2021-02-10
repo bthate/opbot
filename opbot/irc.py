@@ -1,12 +1,9 @@
 # This file is placed in the Public Domain.
 
-import os
-import queue
-import socket
-import textwrap
-import time
-import threading
-import _thread
+__version__ = 2
+
+import os, queue, socket, textwrap
+import time, threading, _thread
 
 from op.dbs import find, last
 from op.obj import Cfg, Default, Object, format, get, save, update
@@ -16,10 +13,10 @@ from op.run import cfg as maincfg
 from op.thr import launch
 from op.utl import locked
 
-from .ver import __version__
+from .usr import Users
 
 def __dir__():
-    return ("Cfg", "DCC", "Event", "IRC", "User", "Users", "init", "cfg", "dlt", "met", "ops")
+    return ("Cfg", "DCC", "Event", "IRC", "init")
 
 def init(hdl):
     i = IRC()
@@ -34,14 +31,13 @@ class ENOUSER(Exception):
 
 class Cfg(Cfg):
 
-
     def __init__(self):
         super().__init__()
         self.channel = "#opbot"
         self.nick = "opbot"
         self.port = 6667
         self.server = "localhost"
-        self.realname = "Object Programming Bot"
+        self.realname = "using the law to administer poison equals genocide"
         self.username = "opbot"
 
 class Event(Event):
@@ -391,6 +387,7 @@ class DCC(Handler):
         self._fsock = None
         self.encoding = "utf-8"
         self.origin = ""
+        Bus.add(self)
 
     def raw(self, txt):
         self._fsock.write(str(txt).rstrip())
@@ -448,104 +445,3 @@ class DCC(Handler):
     def say(self, channel, txt):
         self.raw(txt)
 
-class User(Object):
-
-    def __init__(self):
-        super().__init__()
-        self.user = ""
-        self.perms = []
-
-class Users(Object):
-
-    userhosts = Object()
-
-    def allowed(self, origin, perm):
-        perm = perm.upper()
-        origin = get(self.userhosts, origin, origin)
-        user = self.get_user(origin)
-        if user:
-            if perm in user.perms:
-                return True
-        return False
-
-    def delete(self, origin, perm):
-        for user in self.get_users(origin):
-            try:
-                user.perms.remove(perm)
-                save(user)
-                return True
-            except ValueError:
-                pass
-
-    def get_users(self, origin=""):
-        s = {"user": origin}
-        return find("opbot.irc.User", s)
-
-    def get_user(self, origin):
-        u = list(self.get_users(origin))
-        if u:
-            return u[-1][-1]
-
-    def meet(self, origin, perms=None):
-        user = self.get_user(origin)
-        if user:
-            return user
-        user = User()
-        user.user = origin
-        user.perms = ["USER", ]
-        save(user)
-        return user
-
-    def oper(self, origin):
-        user = self.get_user(origin)
-        if user:
-            return user
-        user = User()
-        user.user = origin
-        user.perms = ["OPER", "USER"]
-        save(user)
-        return user
-
-    def perm(self, origin, permission):
-        user = self.get_user(origin)
-        if not user:
-            raise ENOUSER(origin)
-        if permission.upper() not in user.perms:
-            user.perms.append(permission.upper())
-            save(user)
-        return user
-
-# commands
-
-def cfg(event):
-    c = Cfg()
-    last(c)
-    if event.prs and not event.prs.sets:
-        return event.reply(format(c, skip=["username", "realname"]))
-    update(c, event.prs.sets)
-    save(c)
-    event.reply("ok")
-
-def dlt(event):
-    if not event.args:
-        return
-    selector = {"user": event.args[0]}
-    for fn, o in find("opbot.irc.User", selector):
-        o._deleted = True
-        save(o)
-        event.reply("ok")
-        break
-
-def met(event):
-    u = User()
-    u.user = event.rest
-    u.perms = ["USER"]
-    save(u)
-    event.reply("ok")
-
-def ops(event):
-    if not event.args:
-        return
-    bot = Bus.by_orig(event.orig)
-    if bot.users.allowed(event.origin, "USER"):
-        bot.raw("MODE %s %s" % (bot.cfg.nick, "+o"))

@@ -179,8 +179,11 @@ def parse(o, txt):
                 continue
             except ValueError:
                 pass
-            for op in opt.opt:
-                o.opts[op] = True
+            if len(opt.opt) > 1:
+                for op in opt.opt:
+                    o.opts[op] = True
+            else:
+                o.opts[opt.opt] = True
             continue
         args.append(token.txt)
     if not args:

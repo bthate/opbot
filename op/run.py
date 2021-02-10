@@ -2,7 +2,7 @@
 
 import sys, time
 
-from .obj import Cfg, save
+from .obj import Cfg, save, update
 from .prs import parse
 from .trm import termsave, termreset
 
@@ -29,16 +29,11 @@ def execute(main):
     except PermissionError as ex:
         print(str(ex))
 
-def parse_cli(use_last=False):
-    from .dbs import last
-    if use_last:
-       last(cfg)
+def parse_cli():
     c = Cfg()
-    parse(c, " ".join(sys.argv[1:]))
-    if c.sets:
+    parse(cfg, " ".join(sys.argv[1:]))
+    if cfg.sets:
         cfg.changed = True
-    cfg.sets.wd = cfg.wd = c.sets.wd or cfg.wd
-    cfg.mods = c.sets.mods or cfg.mods
-    if cfg.changed and use_last:
-        save(cfg)
+    cfg.wd = cfg.sets.wd or cfg.wd
+    cfg.mods = cfg.sets.mods or cfg.mods
     return cfg

@@ -39,13 +39,11 @@ def set(event):
     event.reply("ok")
 
 def main():
-    parse_cli(True)
+    parse_cli()
     if cfg.op("r"):
         cfg.wd = "/var/lib/opbot/"
         cfg.md = os.path.join(cfg.wd, "mod")
     h = Basic()
-    h.add("cpy", cpy)
-    h.add("set", set)
     h.fromdir(cfg.md)
     h.load("opmod.cmd")
     h.load("opmod.sys")
@@ -54,7 +52,9 @@ def main():
         h.load("opmod.csl")
         h.init("csl")
         h.wait()
-    else:
-        h.cmd(cfg.otxt)
+        return
+    h.add("cpy", cpy)
+    h.add("set", set)
+    return h.cmd(cfg.otxt)
 
 console(main)

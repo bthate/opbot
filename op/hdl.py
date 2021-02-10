@@ -199,12 +199,20 @@ class Handler(Object):
     def load(self, mn):
         if mn in self.table:
             return self.table[mn]
-        pn, mnn = mn.rsplit(".", 1)
-        if pn and pn not in self.pkgs:
-            self.pkgs.append(pn)
-        self.table[mn] = direct(mn)
-        self.intro(self.table[mn])
-        return self.table[mn]
+        try:
+            pn, mnn = mn.rsplit(".", 1)
+            if pn and pn not in self.pkgs:
+                self.pkgs.append(pn)
+        except ValueError:
+            pn = None
+            mnn = mn
+        for pn in self.pkgs:
+            mnnn = "%s.%s" % (pn, mnn)
+            if not has_mod(mnnn):
+                continue
+            self.table[mnnn] = direct(mnnn)
+            self.intro(self.table[mnnn])
+            return self.table[mnnn]
 
     def handler(self):
         self.running = True
@@ -249,6 +257,7 @@ class Handler(Object):
 
 def cmd(handler, obj):
     obj.parse()
+    print(obj)
     f = get(handler.cmds, obj.cmd, None)
     res = None
     if f:

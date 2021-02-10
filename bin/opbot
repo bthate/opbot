@@ -73,19 +73,19 @@ def main():
         cfg.md = "/var/lib/opbot/mod/"
         privileges("opbot")
     h = Basic()
+    h.pkgs = ["opbot", "opmod"]
     h.fromdir(cfg.md)
-    h.load("opmod.cmd")
+    h.load("cmd")
     if cfg.txt:
         return h.cmd(cfg.otxt)
     if cfg.op("c"):
-        h.load("opmod.csl")
-        h.load("opmod.sys")
+        h.load("fnd")
+        h.load("sys")
         h.init("csl")
     if cfg.op("i"):
-        h.load("opmod.irc")
-        cfg.mods += ",irc"
+        h.init("irc")
     h.start()
-    launch(h.init, cfg.mods)
+    h.init(cfg.mods)
     if cfg.op("cw"):
         h.wait()
 

@@ -33,7 +33,7 @@ def dlt(event):
     if not event.args:
         return
     selector = {"user": event.args[0]}
-    for fn, o in find("opmod.usr.User", selector):
+    for fn, o in find("opbot.usr.User", selector):
         o._deleted = True
         save(o)
         event.reply("ok")
