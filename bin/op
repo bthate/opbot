@@ -10,7 +10,7 @@ from op.run import cfg, parse_cli
 cfg.wd = os.path.expanduser("~/.opbot")
 cfg.md = os.path.join(cfg.wd, "mod")
 
-def copy(event):
+def cpy():
     if not os.path.exists(cfg.md):
         os.mkdir(cfg.md)
     fns = []
@@ -22,16 +22,16 @@ def copy(event):
     for fn in fns:
         fnn = os.path.join(cfg.md, fn)
         shutil.copy2("mod/%s" % fn, fnn)
-    event.reply("ok")
 
 def main():
     parse_cli()
     if cfg.op("r"):
         cfg.wd = "/var/lib/opbot/"
         cfg.md = os.path.join(cfg.wd, "mod")
+    if cfg.op("i"):
+        return cpy()
     h = Basic()
     h.fromdir(cfg.md)
-    h.add("copy", copy)
     h.walk("opbot,opmod,mod")
     return h.cmd(cfg.otxt)
 

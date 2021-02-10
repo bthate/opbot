@@ -10,17 +10,12 @@ from op.hdl import Command
 from op.run import cfg
 from op.thr import launch
 
-from .prm import exec, param
-
-events = []
+from test.run import exec, h
 
 class Test_Cmd(unittest.TestCase):
 
     def test_cmds(self):
         for x in range(cfg.index or 1):
             for cmd in h.cmds:
-                events.extend(exec(cmd))
+                exec(cmd)
 
-h = Test()
-h.walk("opmod,opbot")
-h.start()

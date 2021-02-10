@@ -4,13 +4,10 @@
 
 import os, unittest
 
-from op.bsc import Test
-from op.obj import Object, get
-from op.hdl import Command, Handler, cmd
 from op.run import cfg
 from op.thr import launch
 
-from .prm import execute, param
+from test.run import exec, consume, h
 
 events = []
 
@@ -22,25 +19,6 @@ class Test_Tinder(unittest.TestCase):
             launch(tests, h)
         consume(events)
 
-def consume(elems):
-    fixed = []
-    res = []
-    for e in elems:
-        r = e.wait()
-        res.append(r)
-        fixed.append(e)
-    for f in fixed:
-        try:
-            elems.remove(f)
-        except ValueError:
-            continue
-    h.stop()
-    return res
-
 def tests(b):
     for cmd in h.cmds:
         events.extend(exec(cmd))
-
-h = Test()
-h.walk("opmod,opbot")
-h.start()

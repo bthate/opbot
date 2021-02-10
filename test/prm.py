@@ -23,7 +23,7 @@ param.rss = ["https://www.reddit.com/r/python/.rss"]
 param.tdo = ["test4", ""]
 param.mbx = ["~/Desktop/25-1-2013", ""]
 
-def exec(cmd):
+def exec(h, cmd):
     exs = get(param, cmd, [""])
     e = list(exs)
     events = []

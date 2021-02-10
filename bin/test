@@ -7,6 +7,8 @@ import os, unittest
 
 from op.run import cfg, execute, parse_cli
 
+import test.run
+
 def open(txt):
     try:
         for line in os.popen(txt).readlines():
@@ -19,6 +21,8 @@ def main():
     open("rm -fR ~/.test")
     cfg.wd = os.path.expanduser("~/.test")
     parse_cli()
+    if cfg.op("v"):
+        cfg.verbose = True
     if cfg.txt:
         pat = "test_%s*" % cfg.txt
     else:
