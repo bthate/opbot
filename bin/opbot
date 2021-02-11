@@ -83,6 +83,7 @@ def main():
         h.load("sys")
         h.init("csl")
     if cfg.op("i"):
+        h.load("ent")
         h.init("irc")
     h.start()
     h.init(cfg.mods)
