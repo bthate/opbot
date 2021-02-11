@@ -111,7 +111,7 @@ class Handler(Object):
         self.cmds = Object()
         self.modnames = Object()
         self.names = Ol()
-        self.pkgs = ""
+        self.pkgs = []
         self.queue = queue.Queue()
         self.started = []
         self.stopped = False
@@ -171,12 +171,17 @@ class Handler(Object):
             return self.table[mn]
 
     def init(self, mns):
+        thrs = []
+        print(mns)
         for mn in spl(mns):
-            mod = self.get_mod(mn)
-            if mod:
-                print("init %s" % mn)
-                thr = launch(mod.init, self)
-                thr.join()
+            for pn in self.pkgs:
+                mnn = "%s.%s" % (pn, mn)
+                print(mnn)
+                mod = self.get_mod(mnn)
+                if mod:
+                    print("init %s" % mnn)
+                    thrs.append(launch(mod.init, self))
+        return thrs
 
     def intro(self, mod):
         for key, o in inspect.getmembers(mod, inspect.isfunction):
