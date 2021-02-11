@@ -111,7 +111,7 @@ class Handler(Object):
         self.cmds = Object()
         self.modnames = Object()
         self.names = Ol()
-        self.pkgs = []
+        self.pkgs = ""
         self.queue = queue.Queue()
         self.started = []
         self.stopped = False
@@ -166,20 +166,20 @@ class Handler(Object):
                 continue
             self.load(fqn)
 
-    def init(self, mns, name=""):
-        thrs = []
+    def get_mod(self, mn):
+        if mn in self.table:
+            return self.table[mn]
+
+    def init(self, mns):
         for mn in spl(mns):
-            for pn in self.pkgs:
-                fqn = "%s.%s" % (pn, mn)
-                if not has_mod(fqn):
-                    continue
-                if not mn in self.started:
-                    mod = self.load(fqn)
-                    func = getattr(mod, "init", None)
-                    if func:
-                        self.started.append(mn)
-                        thrs.append(func(self))
-        return [t for t in thrs if t]
+            mns = self.load(mn)
+            for mnn in mns:
+                print(mnn)
+                mod = self.get_mod(mnn)
+                if mod:
+                    print("init %s" % mnn)
+                    thr = launch(mod.init, self)
+                    thr.join()
 
     def intro(self, mod):
         for key, o in inspect.getmembers(mod, inspect.isfunction):
@@ -196,24 +196,19 @@ class Handler(Object):
                     self.names.append(o.__name__.lower(), t)
 
     @locked(loadlock)
-    def load(self, mn):
-        if mn in self.table:
-            return self.table[mn]
-        try:
-            pn, mnn = mn.rsplit(".", 1)
-            if pn and pn not in self.pkgs:
-                self.pkgs.append(pn)
-        except ValueError:
-            pn = None
-            mnn = mn
-        for pn in self.pkgs:
-            mnnn = "%s.%s" % (pn, mnn)
-            if not has_mod(mnnn):
-                continue
-            self.table[mnnn] = direct(mnnn)
-            self.intro(self.table[mnnn])
-            return self.table[mnnn]
-
+    def load(self, mns):
+        res = []
+        for pn in spl(self.pkgs):
+           mnn = ""
+           for mn in spl(mns):
+                mnn = "%s.%s" % (pn, mn)
+                if not has_mod(mnn):
+                    continue
+                self.table[mnn] = direct(mnn)
+                self.intro(self.table[mnn])
+                res.append(mnn)
+        return res
+            
     def handler(self):
         self.running = True
         while not self.stopped:

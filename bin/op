@@ -45,11 +45,10 @@ def main():
         cfg.md = os.path.join(cfg.wd, "mod")
     h = Basic()
     h.fromdir(cfg.md)
-    h.load("opmod.cmd")
-    h.load("opmod.sys")
+    h.load("cmd,sys")
     h.walk(cfg.mods)
     if cfg.op("c"):
-        h.load("opmod.csl")
+        h.load("csl")
         h.init("csl")
         h.wait()
         return

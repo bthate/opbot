@@ -59,31 +59,32 @@ from op.utl import privileges
 
 cfg.wd = os.path.expanduser("~/.opbot")
 cfg.md = os.path.join(cfg.wd, "mod")
+wd = "/var/lib/opbot/"
+md = "/var/lib/opbot/mod/"
 
 def main():
     parse_cli()
     if cfg.op("h"):
         return print(__doc__)
+    if cfg.op("r"):
+        cfg.wd = wd
+        cfg.md = md
+        privileges("opbot")
     if cfg.op("s"):
         save(cfg)
     if cfg.op("l"):
         last(cfg)
-    if cfg.op("r"):
-        cfg.wd = "/var/lib/opbot/"
-        cfg.md = "/var/lib/opbot/mod/"
-        privileges("opbot")
     h = Basic()
-    h.pkgs = ["opbot", "opmod"]
+    h.pkgs = "opbot,opmod"
     h.fromdir(cfg.md)
     h.load("cmd")
     if cfg.txt:
         return h.cmd(cfg.otxt)
     if cfg.op("c"):
-        h.load("fnd")
-        h.load("sys")
+        h.load("fnd,sys")
         h.init("csl")
     if cfg.op("i"):
-        h.load("ent")
+        h.load("ent,ver")
         h.init("irc")
     h.start()
     h.init(cfg.mods)
