@@ -69,3 +69,22 @@ class Users(Object):
             user.perms.append(permission.upper())
             save(user)
         return user
+
+def dlt(event):
+    if not event.args:
+        return
+    selector = {"user": event.args[0]}
+    for fn, o in find("opbot.usr.User", selector):
+        o._deleted = True
+        save(o)
+        event.reply("ok")
+        break
+
+def met(event):
+    if not event.args:
+        return
+    u = User()
+    u.user = event.rest
+    u.perms = ["USER"]
+    save(u)
+    event.reply("ok")

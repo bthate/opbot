@@ -172,14 +172,11 @@ class Handler(Object):
 
     def init(self, mns):
         for mn in spl(mns):
-            mns = self.load(mn)
-            for mnn in mns:
-                print(mnn)
-                mod = self.get_mod(mnn)
-                if mod:
-                    print("init %s" % mnn)
-                    thr = launch(mod.init, self)
-                    thr.join()
+            mod = self.get_mod(mn)
+            if mod:
+                print("init %s" % mn)
+                thr = launch(mod.init, self)
+                thr.join()
 
     def intro(self, mod):
         for key, o in inspect.getmembers(mod, inspect.isfunction):
@@ -196,18 +193,9 @@ class Handler(Object):
                     self.names.append(o.__name__.lower(), t)
 
     @locked(loadlock)
-    def load(self, mns):
-        res = []
-        for pn in spl(self.pkgs):
-           mnn = ""
-           for mn in spl(mns):
-                mnn = "%s.%s" % (pn, mn)
-                if not has_mod(mnn):
-                    continue
-                self.table[mnn] = direct(mnn)
-                self.intro(self.table[mnn])
-                res.append(mnn)
-        return res
+    def load(self, mn):
+        self.table[mn] = direct(mn)
+        self.intro(self.table[mn])
             
     def handler(self):
         self.running = True

@@ -10,7 +10,7 @@ from op.obj import Cfg, format, keys, save, update
 from .usr import User
 
 def __dir__():
-    return ("cmd", "cfg", "dlt", "met")
+    return ("cmd",)
 
 def cmd(event):
     bot = Bus.by_orig(event.orig)
@@ -18,16 +18,6 @@ def cmd(event):
         c = sorted(keys(bot.cmds))
         if c:
             event.reply(",".join(c))
-
-def cfg(event):
-    from .irc import Cfg
-    c = Cfg()
-    last(c)
-    if event.prs and not event.prs.sets:
-        return event.reply(format(c, skip=["username", "realname"]))
-    update(c, event.prs.sets)
-    save(c)
-    event.reply("ok")
 
 def dlt(event):
     if not event.args:

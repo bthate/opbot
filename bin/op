@@ -12,6 +12,16 @@ from op.run import cfg, console, parse_cli
 cfg.wd = os.path.expanduser("~/.opbot")
 cfg.md = os.path.join(cfg.wd, "mod")
 
+def cfg(event):
+    from .irc import Cfg
+    c = Cfg()
+    last(c)
+    if event.prs and not event.prs.sets:
+        return event.reply(format(c, skip=["username", "realname"]))
+    update(c, event.prs.sets)
+    save(c)
+    event.reply("ok")
+
 def cpy(event):
     if not os.path.exists(cfg.md):
         os.mkdir(cfg.md)
@@ -45,13 +55,13 @@ def main():
         cfg.md = os.path.join(cfg.wd, "mod")
     h = Basic()
     h.fromdir(cfg.md)
-    h.load("cmd,sys")
+    h.walk("opbot,opmod")
     h.walk(cfg.mods)
     if cfg.op("c"):
-        h.load("csl")
         h.init("csl")
         h.wait()
         return
+    h.add("cfg", cfg)
     h.add("cpy", cpy)
     h.add("set", set)
     return h.cmd(cfg.otxt)
