@@ -62,6 +62,16 @@ cfg.md = os.path.join(cfg.wd, "mod")
 wd = "/var/lib/opbot/"
 md = "/var/lib/opbot/mod/"
 
+def docfg(event):
+    from opbot.irc import Cfg
+    c = Cfg()
+    last(c)
+    if event.prs and not event.prs.sets:
+        return event.reply(format(c, skip=["username", "realname"]))
+    update(c, event.prs.sets)
+    save(c)
+    event.reply("ok")
+
 def main():
     parse_cli()
     if cfg.op("h"):
@@ -79,6 +89,7 @@ def main():
     h.fromdir(cfg.md)
     h.walk("opbot,opmod")
     if cfg.txt:
+        h.add("cfg", docfg)
         return h.cmd(cfg.otxt)
     if cfg.op("c"):
         cfg.mods += ",csl"

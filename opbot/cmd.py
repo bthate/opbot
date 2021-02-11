@@ -1,7 +1,6 @@
 # This file is placed in the Public Domain.
 
-import threading
-import time
+import threading, time
 
 from op.dbs import last
 from op.hdl import Bus
@@ -18,22 +17,3 @@ def cmd(event):
         c = sorted(keys(bot.cmds))
         if c:
             event.reply(",".join(c))
-
-def dlt(event):
-    if not event.args:
-        return
-    selector = {"user": event.args[0]}
-    for fn, o in find("opbot.usr.User", selector):
-        o._deleted = True
-        save(o)
-        event.reply("ok")
-        break
-
-def met(event):
-    if not event.args:
-        return
-    u = User()
-    u.user = event.rest
-    u.perms = ["USER"]
-    save(u)
-    event.reply("ok")

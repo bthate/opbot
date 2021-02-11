@@ -43,7 +43,7 @@ def thr(event):
             result.append((up, thrname))
     res = []
     for up, txt in sorted(result, key=lambda x: x[0]):
-        res.append("%s %s" % (txt.lower(), elapsed(up)))
+        res.append("%s %s" % (txt, elapsed(up)))
     if res:
         event.reply(" | ".join(res))
 
