@@ -114,7 +114,8 @@ class Fetcher(Object):
     def run(self):
         thrs = []
         for fn, o in all("opmod.rss.Rss"):
-            thrs.append(launch(self.fetch, Default(o)))
+            #d = Default(o)
+            thrs.append(launch(self.fetch, o))
         return thrs
 
     def start(self, repeat=True):
