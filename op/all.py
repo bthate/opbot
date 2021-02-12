@@ -1,16 +1,12 @@
-# OP - Object Programming Library (all.py)
-#
-# this file is placed in the Public Domain.
+# This file is placed in the Public Domain.
 
-"import all modules"
-
-# imports
-
+import op.bsc
 import op.clk
-import op.cmd
+import op.csl
 import op.dbs
 import op.hdl
 import op.itr
+import op.obj
 import op.prs
 import op.sel
 import op.thr
