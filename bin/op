@@ -8,6 +8,7 @@ from op.hdl import Core
 from op.obj import Object, format, save, update
 from op.prs import parse
 from op.run import cfg, parse_cli
+from op.trm import termsave, termreset
 
 cfg.wd = os.path.expanduser("~/.opbot")
 cfg.md = os.path.join(cfg.wd, "mod")
