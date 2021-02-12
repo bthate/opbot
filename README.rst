@@ -177,19 +177,21 @@ OPMOD has these modules:
 
 ::
 
-    opmod.dbg           - debug
-    opmod.ent           - log and todo
-    opmod.irc           - Internet Relay Chat
-    opmod.mbx           - mailbox/maildir
-    opmod.rss           - Rich Site Syndicate
-    opmod.udp           - Uniform Datagram Protocol
+    opm.ent		- log and todo
+    opm.fnd		- locate objects
+    opm.mbx		- mailbox/maildir
+    opm.rss		- Rich Site Syndicate
+    opm.sys		- system commands
+    opm.udp		- Uniform Datagram Protocol
 
 OPBOT provides the following modules:
 
 ::
 
-    opbot.irc          - internet relay chat
-
+    opbot.cmd		- list of commands
+    opbot.irc		- internet relay chat
+    opbot.usr		- users
+    opbot.ver		- version
 
 MANPAGE
 =======

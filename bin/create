@@ -30,9 +30,9 @@ print("setting PYTHONPATH to %s" % installdir)
 os.environ['PYTHONPATH'] = installdir
 os.environ['PYTHONUSERBASE'] = installdir
 
-#todo = ["w/opdoc", "w/oplib", "w/opmod", "w/opbot"]
+todo = ["w/opdoc", "w/oplib", "w/opbot"]
 #todo = ["w/%s" % x for x in os.listdir("w") if os.path.isdir("w/%s" % x)]
-todo = [os.getcwd(),]
+#todo = [os.getcwd(),]
 print(todo)
 
 def get_url(url):

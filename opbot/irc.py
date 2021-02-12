@@ -94,8 +94,6 @@ class IRC(Handler):
     def _connect(self, server, port=6667):
         addr = socket.getaddrinfo(server, port, socket.AF_INET)[-1][-1]
         s = socket.create_connection(addr)
-        if maincfg.debug:
-            print("connected to %s" % server)
         s.setblocking(True)
         s.settimeout(1200.0)
         self._sock = s
@@ -177,8 +175,6 @@ class IRC(Handler):
     def _some(self):
         inbytes = self._sock.recv(512)
         txt = str(inbytes, "utf-8")
-        if maincfg.debug:
-            print(txt.rstrip())
         if txt == "":
             raise ConnectionResetError
         self.state.lastline += txt
@@ -296,8 +292,6 @@ class IRC(Handler):
         if not self._sock:
             return
         txt = txt.rstrip()
-        if maincfg.debug:
-            print(txt)
         if not txt.endswith("\r\n"):
             txt += "\r\n"
         txt = txt[:512]

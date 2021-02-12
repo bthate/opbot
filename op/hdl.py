@@ -247,6 +247,27 @@ class Core(Handler):
         self.register("cmd", cmd)
         Bus.add(self)
 
+class Console(Core):
+
+    def direct(self, txt):
+        pass
+
+    def input(self):
+        while 1:
+            try:
+                e = self.poll()
+            except EOFError:
+                break
+            self.put(e)
+            e.wait()
+
+    def poll(self):
+        return Command(input("> "))
+
+    def start(self):
+        super().start()
+        launch(self.input)
+
 def cmd(handler, obj):
     obj.parse()
     f = get(handler.cmds, obj.cmd, None)

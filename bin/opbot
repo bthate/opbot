@@ -1,22 +1,36 @@
 #!/usr/bin/env python3
 # This file is placed in the Public Domain.
 
+name = "opbot"
+wd = "/var/lib/%s/" % name
+md = "/var/lib/%s/mod/" % name
+
 import os, readline, shutil, sys
 
-from op.bsc import Basic
 from op.dbs import last
+from op.hdl import Console, Core
 from op.obj import Object, format, load, register, save, update
 from op.prs import parse
-from op.run import console, cfg, parse_cli
+from op.run import cfg, parse_cli
+from op.trm import termsave, termreset
 from op.thr import launch
 from op.utl import privileges
 
-name = "opbot"
+class Basic(Console):
 
-cfg.wd = os.path.expanduser("~/.%s" % name)
-cfg.md = os.path.join(cfg.wd, "mod")
-wd = "/var/lib/%s/" % name
-md = "/var/lib/%s/mod/" % name
+    def direct(self, txt):
+        print(txt)
+
+def exec(main):
+    termsave()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except PermissionError as ex:
+        print(str(ex))
+    finally:
+        termreset()
 
 def docfg(event):
     from opbot.irc import Cfg
@@ -30,15 +44,16 @@ def docfg(event):
 
 def main():
     parse_cli()
-    if cfg.op("r"):
-        cfg.wd = wd
-        cfg.md = md
+    if not cfg.op("r"):
+        cfg.wd = wd = os.path.expanduser("~/.%s" % name)
+        cfg.md = md = os.path.join(cfg.wd, "mod")
+    else:
         privileges(name)
     if cfg.op("s"):
         save(cfg)
     if cfg.op("l"):
         last(cfg)
-    h = Basic()
+    h = Core()
     h.pkgs = [name,]
     h.fromdir(cfg.md)
     h.walk(name)
@@ -46,7 +61,9 @@ def main():
         h.add("cfg", docfg)
         return h.cmd(cfg.otxt)
     if cfg.op("c"):
-        cfg.mods += ",csl"
+        c = Console()
+        c.clone(h)
+        c.start()
     if cfg.op("i"):
         cfg.mods += ",irc"
     h.start()
@@ -54,4 +71,4 @@ def main():
     if cfg.op("cw"):
         h.wait()
 
-console(main)
+exec(main)

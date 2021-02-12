@@ -4,7 +4,7 @@
 import os, readline, shutil
 
 from op.dbs import last
-from op.hdl import Core
+from op.hdl import Console
 from op.obj import Object, format, save, update
 from op.prs import parse
 from op.run import cfg, parse_cli
@@ -13,7 +13,7 @@ from op.trm import termsave, termreset
 cfg.wd = os.path.expanduser("~/.opbot")
 cfg.md = os.path.join(cfg.wd, "mod")
 
-class Basic(Core):
+class Basic(Console):
 
     def direct(self, txt):
         print(txt)
@@ -72,7 +72,7 @@ def main():
         cfg.md = os.path.join(cfg.wd, "mod")
     h = Basic()
     h.fromdir(cfg.md)
-    h.walk("opbot,opmod")
+    h.walk("opbot,opm")
     h.walk(cfg.mods)
     h.add("cfg", docfg)
     if cfg.op("c"):
