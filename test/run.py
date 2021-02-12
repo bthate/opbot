@@ -1,10 +1,16 @@
 # This file is placed in the Public Domain.
 
-from op.bsc import Test
 from op.obj import get
-from op.hdl import Command
+from op.hdl import Command, Core
+from op.run import cfg
 
 from test.prm import param
+
+class Test(Core):
+
+    def direct(self, txt):
+        if cfg.op("v"):
+            print(txt)
 
 def consume(elems):
     fixed = []

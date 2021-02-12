@@ -5,9 +5,21 @@
 
 import os, unittest
 
-from op.run import cfg, execute, parse_cli
+from op.run import cfg, parse_cli
+from op.trm import termsave, termreset
 
 import test.run
+
+def exec(main):
+    termsave()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except PermissionError as ex:
+        print(str(ex))
+    finally:
+        termreset()
 
 def open(txt):
     try:
@@ -30,4 +42,4 @@ def main():
     suite = unittest.loader.TestLoader().discover(test_path, pattern=pat)
     unittest.TextTestRunner(verbosity=3).run(suite)
 
-execute(main)
+exec(main)

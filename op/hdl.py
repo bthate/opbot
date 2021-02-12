@@ -240,6 +240,13 @@ class Handler(Object):
         while not self.stopped:
             time.sleep(30.0)
 
+class Core(Handler):
+
+    def __init__(self):
+        super().__init__()
+        self.register("cmd", cmd)
+        Bus.add(self)
+
 def cmd(handler, obj):
     obj.parse()
     f = get(handler.cmds, obj.cmd, None)

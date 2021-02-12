@@ -10,25 +10,6 @@ cfg = Cfg()
 
 starttime = time.time()
 
-def console(main):
-    termsave()
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("")
-    except PermissionError as ex:
-        print(str(ex))
-    finally:
-        termreset()
-
-def execute(main):
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("")
-    except PermissionError as ex:
-        print(str(ex))
-
 def parse_cli():
     c = Cfg()
     parse(cfg, " ".join(sys.argv[1:]))

@@ -3,14 +3,30 @@
 
 import os, readline, shutil
 
-from op.bsc import Basic
 from op.dbs import last
+from op.hdl import Core
 from op.obj import Object, format, save, update
 from op.prs import parse
-from op.run import cfg, console, parse_cli
+from op.run import cfg, parse_cli
 
 cfg.wd = os.path.expanduser("~/.opbot")
 cfg.md = os.path.join(cfg.wd, "mod")
+
+class Basic(Core):
+
+    def direct(self, txt):
+        print(txt)
+
+def exec(main):
+    termsave()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except PermissionError as ex:
+        print(str(ex))
+    finally:
+        termreset()
 
 def docfg(event):
     from opbot.irc import Cfg
@@ -66,4 +82,4 @@ def main():
     h.add("set", set)
     return h.cmd(cfg.otxt)
 
-console(main)
+exec(main)
