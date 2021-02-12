@@ -74,8 +74,6 @@ def docfg(event):
 
 def main():
     parse_cli()
-    if cfg.op("h"):
-        return print(__doc__)
     if cfg.op("r"):
         cfg.wd = wd
         cfg.md = md
