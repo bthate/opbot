@@ -15,7 +15,7 @@ from .usr import Users
 from .ver import __version__
 
 def __dir__():
-    return ("Cfg", "DCC", "Event", "IRC", "init")
+    return ("Cfg", "DCC", "Event", "IRC", "cfg", "init")
 
 def init(hdl):
     i = IRC()
@@ -438,3 +438,11 @@ class DCC(Handler):
     def say(self, channel, txt):
         self.raw(txt)
 
+def cfg(event):
+    c = Cfg()
+    last(c)
+    if event.prs and not event.prs.sets:
+        return event.reply(format(c, skip=["username", "realname"]))
+    update(c, event.prs.sets)
+    save(c)
+    event.reply("ok")

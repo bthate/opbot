@@ -176,7 +176,7 @@ class Handler(Object):
             for pn in self.pkgs:
                 mnn = "%s.%s" % (pn, mn)
                 mod = self.get_mod(mnn)
-                if mod:
+                if mod and "init" in dir(mod):
                     thrs.append(launch(mod.init, self))
         return thrs
 

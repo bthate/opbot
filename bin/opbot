@@ -29,20 +29,19 @@ def main():
     if not cfg.op("r"):
         cfg.wd = wd = os.path.expanduser("~/.%s" % name)
         cfg.md = md = os.path.join(cfg.wd, "mod")
-    else:
+    if cfg.op("r"):
         privileges(name)
+    h = Core()
+    h.pkgs = ["opm", name]
+    h.fromdir(cfg.md)
+    h.walk("opm,%s" % name)
     if cfg.op("s"):
         save(cfg)
     if cfg.op("l"):
         last(cfg)
-    h = Core()
-    h.pkgs = [name,]
-    h.fromdir(cfg.md)
-    h.walk(name)
     if cfg.txt:
         b = Basic()
         b.clone(h)
-        b.walk("opm")
         return b.cmd(cfg.otxt)
     if cfg.op("c"):
         c = Console()

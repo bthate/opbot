@@ -24,6 +24,7 @@ except ModuleNotFoundError:
 def init(hdl):
     "start a rss poller"
     f = Fetcher()
+    print(f)
     return launch(f.start)
 
 class Cfg(Cfg):
