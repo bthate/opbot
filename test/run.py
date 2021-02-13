@@ -40,5 +40,5 @@ def exec(cmd):
     return events
 
 h = Test()
-h.walk("opmod,opbot")
+h.walk("opbot,opm,op")
 h.start()

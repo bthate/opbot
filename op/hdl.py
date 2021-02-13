@@ -245,9 +245,14 @@ class Core(Handler):
     def __init__(self):
         super().__init__()
         self.register("cmd", cmd)
+
+class BusCore(Core):
+
+    def __init__(self):
+        super().__init__()
         Bus.add(self)
 
-class Console(Core):
+class Console(BusCore):
 
     def direct(self, txt):
         pass

@@ -3,84 +3,28 @@
 
 import os, readline, shutil
 
-from op.dbs import last
-from op.hdl import Console
-from op.obj import Object, format, save, update
-from op.prs import parse
+from op.hdl import BusCore
 from op.run import cfg, parse_cli
-from op.trm import termsave, termreset
+from op.trm import exec
 
-cfg.wd = os.path.expanduser("~/.opbot")
-cfg.md = os.path.join(cfg.wd, "mod")
+name = "opbot"
+wd = "/var/lib/%s/" % name
+md = os.path.join(cfg.wd, "mod")
 
-class Basic(Console):
+class Basic(BusCore):
 
     def direct(self, txt):
         print(txt)
 
-def exec(main):
-    termsave()
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("")
-    except PermissionError as ex:
-        print(str(ex))
-    finally:
-        termreset()
-
-def docfg(event):
-    from opbot.irc import Cfg
-    c = Cfg()
-    last(c)
-    if event.prs and not event.prs.sets:
-        return event.reply(format(c, skip=["username", "realname"]))
-    update(c, event.prs.sets)
-    save(c)
-    event.reply("ok")
-
-def cpy(event):
-    if not os.path.exists(cfg.md):
-        os.mkdir(cfg.md)
-    fns = []
-    p = os.path.join(os.getcwd(), "mod")
-    nr = 0
-    for fn in os.listdir(p):
-        if not fn.endswith("py"):
-            continue
-        fns.append(fn)
-    for fn in fns:
-        fnn = os.path.join(cfg.md, fn)
-        shutil.copy2("mod/%s" % fn, fnn)
-        nr += 1
-    event.reply("%s copied to %s" % (nr, p))
-
-def set(event):
-    if not event.otxt:
-        event.reply(format(cfg))
-        return
-    last(cfg)
-    parse(p, event.rest)
-    update(cfg, p)
-    save(cfg)
-    event.reply("ok")
-
 def main():
     parse_cli()
-    if cfg.op("r"):
-        cfg.wd = "/var/lib/opbot/"
-        cfg.md = os.path.join(cfg.wd, "mod")
+    if not cfg.op("r"):
+        cfg.wd = wd = os.path.expanduser("~/.opbot")
+        cfg.md = md = os.path.join(cfg.wd, "mod")
     h = Basic()
     h.fromdir(cfg.md)
-    h.walk("opbot,opm")
+    h.walk("opbot,opm,mod")
     h.walk(cfg.mods)
-    h.add("cfg", docfg)
-    if cfg.op("c"):
-        h.init("csl")
-        h.wait()
-        return
-    h.add("cpy", cpy)
-    h.add("set", set)
     return h.cmd(cfg.otxt)
 
 exec(main)

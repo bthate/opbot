@@ -1,46 +1,28 @@
 #!/usr/bin/env python3
 # This file is placed in the Public Domain.
 
+import os, readline, shutil, sys
+
+from op.dbs import last
+from op.hdl import Console, Core, BusCore
+from op.obj import Object, load, save
+from op.run import cfg, parse_cli
+from op.trm import exec
+from op.utl import privileges
+
 name = "opbot"
 wd = "/var/lib/%s/" % name
 md = "/var/lib/%s/mod/" % name
 
-import os, readline, shutil, sys
-
-from op.dbs import last
-from op.hdl import Console, Core
-from op.obj import Object, format, load, register, save, update
-from op.prs import parse
-from op.run import cfg, parse_cli
-from op.trm import termsave, termreset
-from op.thr import launch
-from op.utl import privileges
-
-class Basic(Console):
+class Console(Console):
 
     def direct(self, txt):
         print(txt)
 
-def exec(main):
-    termsave()
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("")
-    except PermissionError as ex:
-        print(str(ex))
-    finally:
-        termreset()
+class Basic(BusCore):
 
-def docfg(event):
-    from opbot.irc import Cfg
-    c = Cfg()
-    last(c)
-    if event.prs and not event.prs.sets:
-        return event.reply(format(c, skip=["username", "realname"]))
-    update(c, event.prs.sets)
-    save(c)
-    event.reply("ok")
+    def direct(self, txt):
+        print(txt)
 
 def main():
     parse_cli()
@@ -58,8 +40,10 @@ def main():
     h.fromdir(cfg.md)
     h.walk(name)
     if cfg.txt:
-        h.add("cfg", docfg)
-        return h.cmd(cfg.otxt)
+        b = Basic()
+        b.clone(h)
+        b.walk("opm")
+        return b.cmd(cfg.otxt)
     if cfg.op("c"):
         c = Console()
         c.clone(h)
@@ -68,7 +52,7 @@ def main():
         cfg.mods += ",irc"
     h.start()
     h.init(cfg.mods)
-    if cfg.op("cw"):
+    if cfg.op("rcw"):
         h.wait()
 
 exec(main)

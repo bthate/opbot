@@ -1,8 +1,6 @@
 # This file is placed in the Public Domain.
 
-import op.bsc
 import op.clk
-import op.csl
 import op.dbs
 import op.hdl
 import op.itr

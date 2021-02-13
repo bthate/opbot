@@ -12,6 +12,17 @@ from .utl import get_exception
 
 resume = {}
 
+def exec(main):
+    termsave()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except PermissionError as ex:
+        print(str(ex))
+    finally:
+        termreset()
+
 def termsetup(fd):
     return termios.tcgetattr(fd)
 
