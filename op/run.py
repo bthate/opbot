@@ -9,6 +9,14 @@ from .trm import exec
 
 starttime = time.time()
 
+def run(main):
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except PermissionError as ex:
+        print(str(ex))
+
 def parse_cli():
     c = Cfg()
     parse(cfg, " ".join(sys.argv[1:]))
