@@ -293,3 +293,6 @@ def xdir(o, skip=None):
             continue
         res.append(k)
     return res
+
+cfg = Cfg()
+cfg.wd = ""

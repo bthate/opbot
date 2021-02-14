@@ -3,60 +3,23 @@
 
 import os, readline, shutil
 
-from op.dbs import last
-from op.obj import format, save, update
 from op.hdl import BusCore
 from op.run import cfg, parse_cli
 from op.trm import exec
 
-from opbot.irc import Cfg
-
-name = "opbot"
-wd = "/var/lib/%s/" % name
-md = os.path.join(cfg.wd, "mod")
+cfg.wd = "/var/lib/opbot/"
 
 class Basic(BusCore):
 
     def direct(self, txt):
         print(txt)
 
-def cpy(event):
-    if not os.path.exists(cfg.md):
-        os.mkdir(cfg.md)
-    fns = []
-    p = os.path.join(os.getcwd(), "mod")
-    nr = 0
-    for fn in os.listdir(p):
-        if not fn.endswith("py"):
-            continue
-        fns.append(fn)
-    for fn in fns:
-        fnn = os.path.join(cfg.md, fn)
-        shutil.copy2("mod/%s" % fn, fnn)
-        nr += 1
-    event.reply("%s copied to %s" % (nr, p))
-
-def set(event):
-    if not event.otxt:
-        event.reply(format(cfg))
-        return
-    last(cfg)
-    parse(p, event.rest)
-    update(cfg, p)
-    save(cfg)
-    event.reply("ok")
-
 def main():
     parse_cli()
-    if not cfg.op("r"):
-        cfg.wd = wd = os.path.expanduser("~/.opbot")
-        cfg.md = md = os.path.join(cfg.wd, "mod")
     h = Basic()
-    h.fromdir(cfg.md)
-    h.walk("opbot,opm,mod")
-    h.walk(cfg.mods)
-    h.add("cpy", cpy)
-    h.add("set", set)
+    h.fromdir(os.path.join(cfg.wd, "mod"))
+    h.load_mod("cli,cmd,irc,usr,ver")
+    h.load_mod(cfg.mods)
     return h.cmd(cfg.otxt)
 
 exec(main)

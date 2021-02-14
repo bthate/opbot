@@ -1,0 +1,20 @@
+#!/usr/bin/env python3
+# This file is placed in the Public Domain.
+
+from op.dbs import last
+from op.obj import cfg
+from op.hdl import Core
+from op.utl import privileges, os
+
+def main():
+    last(cfg)
+    cfg.wd = "/var/lib/opbot/"
+    privileges("opbot")
+    h = Core()
+    h.fromdir(os.path.join(cfg.wd, "mod"))
+    h.load_mod(cfg.mods)
+    h.start()
+    h.init(cfg.mods)
+    h.wait()
+
+main()

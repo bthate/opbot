@@ -5,9 +5,9 @@ import time, threading, _thread
 
 from op.dbs import find, last
 from op.obj import Cfg, Default, Object, format, get, save, update
+from op.obj import cfg as maincfg
 from op.hdl import Bus, Event, Handler, cmd
 from op.prs import parse
-from op.run import cfg as maincfg
 from op.thr import launch
 from op.utl import locked
 

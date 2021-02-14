@@ -2,7 +2,7 @@
 
 import unittest
 
-from op.run import cfg
+from op.obj import cfg
 from op.sel import Select
 
 from test.run import exec

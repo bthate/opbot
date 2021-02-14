@@ -1,8 +1,7 @@
 # This file is placed in the Public Domain.
 
-from op.obj import get
+from op.obj import cfg, get
 from op.hdl import Command, Core
-from op.run import cfg
 
 from test.prm import param
 

@@ -20,7 +20,7 @@ setup(
     install_requires=["oplib", "feedparser"],
     packages=["opbot", "opm"],
     namespace_packages=["opbot", "opm"],
-    scripts=["bin/op", "bin/opbot", "bin/opctl"],
+    scripts=["bin/op", "bin/opbot", "bin/opbotd", "bin/opctl"],
     zip_safe=False,
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: Public Domain',

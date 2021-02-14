@@ -104,6 +104,8 @@ class Handler(Object):
 
     threaded = False
 
+    pkgnames = Object()
+
     def __init__(self):
         super().__init__()
         self.cbs = Object()
@@ -128,6 +130,7 @@ class Handler(Object):
         update(self.cbs, hdl.cbs)
         update(self.modnames, hdl.modnames)
         update(self.names, hdl.names)
+        update(self.pkgnames, hdl.pkgnames)
         self.pkgs = hdl.pkgs
         self.table = hdl.table
 
@@ -181,6 +184,9 @@ class Handler(Object):
         return thrs
 
     def intro(self, mod):
+        fqn = mod.__name__
+        mn = fqn.split(".")[-1]
+        self.pkgnames[mn] = fqn
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if o.__code__.co_argcount == 1:
                 if o.__code__.co_varnames[0] == "obj":
@@ -198,6 +204,17 @@ class Handler(Object):
     def load(self, mn):
         self.table[mn] = direct(mn)
         self.intro(self.table[mn])
+
+    def load_mod(self, mns):
+        if not self.pkgnames:
+            try:
+                import op.tbl
+                update(self.pkgnames, op.tbl.pkgnames)
+            except ImportError:
+                pass
+        for mn in spl(mns):
+            mn = get(self.pkgnames, mn, mn)
+            self.load(mn)
             
     def handler(self):
         self.running = True
@@ -218,7 +235,7 @@ class Handler(Object):
     def say(self, channel, txt):
         self.direct(txt)
 
-    def start(self):
+    def start(self, pkgnames=None):
         launch(self.handler)
 
     def stop(self):

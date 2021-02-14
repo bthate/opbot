@@ -1,12 +1,11 @@
 # This file is placed in the Public Domain.
 
-import sys, time
+import os, sys, time
 
-from .obj import Cfg, save, update
+from .obj import Cfg, cfg, save, update
+from .hdl import Core, Console
 from .prs import parse
-from .trm import termsave, termreset
-
-cfg = Cfg()
+from .trm import exec
 
 starttime = time.time()
 

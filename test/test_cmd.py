@@ -4,7 +4,7 @@
 
 import os, unittest
 
-from op.run import cfg
+from op.obj import cfg
 
 from test.run import exec, h
 
