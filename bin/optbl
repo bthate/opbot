@@ -1,0 +1,11 @@
+#!/usr/bin/env python3
+# This file is placed in the Public Domain.
+
+from op.hdl import Handler
+
+h = Handler()
+h.walk("opbot,opm")
+
+print("modnames = %s" % h.modnames)
+print("names = %s" % h.names)
+print("pkgnames = %s" % h.pkgnames)
