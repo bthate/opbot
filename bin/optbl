@@ -4,7 +4,7 @@
 from op.hdl import Handler
 
 h = Handler()
-h.walk("opbot,opm")
+h.walk("opbot,op")
 
 print("modnames = %s" % h.modnames)
 print("names = %s" % h.names)

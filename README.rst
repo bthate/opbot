@@ -177,19 +177,19 @@ OPMOD has these modules:
 
 ::
 
-    opm.ent		- log and todo
-    opm.fnd		- locate objects
-    opm.mbx		- mailbox/maildir
-    opm.rss		- Rich Site Syndicate
-    opm.sys		- system commands
-    opm.udp		- Uniform Datagram Protocol
 
 OPBOT provides the following modules:
 
 ::
 
+    opbot.cli		- cli commands
     opbot.cmd		- list of commands
+    opbot.ent		- log and todo
+    opbot.fnd		- locate objects
     opbot.irc		- internet relay chat
+    opbot.rss		- Rich Site Syndicate
+    opbot.sys		- system commands
+    opbot.udp		- Uniform Datagram Protocol
     opbot.usr		- users
     opbot.ver		- version
 
