@@ -1,11 +1,11 @@
 # This file is placed in the Public Domain.
 
 from op.obj import cfg, get
-from op.hdl import Command, Core
+from op.hdl import BusCore, Command
 
 from test.prm import param
 
-class Test(Core):
+class Test(BusCore):
 
     def direct(self, txt):
         if cfg.op("v"):

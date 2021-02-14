@@ -13,6 +13,5 @@ class Test_Cmd(unittest.TestCase):
     def test_cmds(self):
         for x in range(cfg.index or 1):
             for cmd in h.cmds:
-                print(cmd)
                 exec(cmd)
 
