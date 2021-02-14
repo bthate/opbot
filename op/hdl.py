@@ -176,11 +176,10 @@ class Handler(Object):
     def init(self, mns):
         thrs = []
         for mn in spl(mns):
-            for pn in self.pkgs:
-                mnn = "%s.%s" % (pn, mn)
-                mod = self.get_mod(mnn)
-                if mod and "init" in dir(mod):
-                    thrs.append(launch(mod.init, self))
+            mn = get(self.pkgnames, mn, mn)
+            mod = self.get_mod(mn)
+            if mod and "init" in dir(mod):
+                thrs.append(launch(mod.init, self))
         return thrs
 
     def intro(self, mod):
