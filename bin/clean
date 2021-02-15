@@ -2,4 +2,4 @@
 #
 # This file is placed in the Public Domain.
 
-rm -fR run run.tar.gz op/*~ op/__pycache__ opbot/*~ opbot/__pycache__ dist build *~ __pycache__ bin/*~ test/*~ test/__pycache__ opbot.egg-info
+rm -fR env env.tar.gz html doc/*~ doc/op*.rst doc/_template/*~ run run.tar.gz op/*~ op/__pycache__ opbot/*~ opbot/__pycache__ dist build *~ __pycache__ bin/*~ test/*~ test/__pycache__ opbot.egg-info
