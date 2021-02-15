@@ -177,7 +177,8 @@ class Handler(Object):
             fqn = "%s.%s" % (name, mn)
             if not has_mod(fqn):
                 continue
-            self.load(fqn)
+            mod = self.load(fqn)
+            self.intro(mod)
 
     def get_mod(self, mn):
         if mn in self.table:
@@ -211,17 +212,22 @@ class Handler(Object):
                     self.register(key, o)
                 elif o.__code__.co_varnames[0] == "event":
                     self.cmds[key] = o
-        #        self.modnames[key] = o.__module__
-        #for _key, o in inspect.getmembers(mod, inspect.isclass):
-        #    if issubclass(o, Object):
-        #        t = "%s.%s" % (o.__module__, o.__name__)
-        #        if o.__name__.lower() not in self.names:
-        #            self.names.append(o.__name__.lower(), t)
+                    self.modnames[key] = o.__module__
+        for _key, o in inspect.getmembers(mod, inspect.isclass):
+            if issubclass(o, Object):
+                t = "%s.%s" % (o.__module__, o.__name__)
+                if o.__name__.lower() not in self.names:
+                    self.names.append(o.__name__.lower(), t)
 
     @locked(loadlock)
     def load(self, mn):
         self.table[mn] = direct(mn)
-        self.intro(self.table[mn])
+        for key, o in inspect.getmembers(self.table[mn], inspect.isfunction):
+            if o.__code__.co_argcount == 1:
+                if o.__code__.co_varnames[0] == "obj":
+                    self.register(key, o)
+                elif o.__code__.co_varnames[0] == "event":
+                    self.cmds[key] = o
         return self.table[mn]
 
     def load_mod(self, mns, tbl="op.tbl"):
@@ -234,7 +240,7 @@ class Handler(Object):
         for mn in spl(mns):
             mn = get(self.pkgnames, mn, mn)
             self.load(mn)
-            
+
     def handler(self):
         self.running = True
         while not self.stopped:
@@ -313,6 +319,10 @@ class Console(BusCore):
 
 def cmd(handler, obj):
     obj.parse()
+    if obj.cmd not in handler.cmds:
+        mn = get(handler.modnames, obj.cmd, None)
+        if mn:
+             handler.load(mn)
     f = get(handler.cmds, obj.cmd, None)
     res = None
     if f:

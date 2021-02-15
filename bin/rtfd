@@ -1,8 +1,8 @@
 #!/bin/bash
-# OPBOT - operbot (bin/rtfd)
+# OP - object programming (bin/rtfd)
 #
 # this file is placed in the public domain
 
-bin/env
-env/bin/python3 env/bin/pip3 install -r docs/requirements.txt --upgrade --force-reinstall
-env/bin/python3 env/bin/sphinx-build docs html
+bin/env opbot
+env/bin/python3 env/bin/pip3 install -r doc/requirements.txt --upgrade --force-reinstall
+env/bin/python3 env/bin/sphinx-build doc html

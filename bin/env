@@ -34,7 +34,7 @@ def main():
     except:
         pass
     try:
-        shutil.rmtree("%s.egg-info" % genoclaim)
+        shutil.rmtree("%s.egg-info" % pn)
     except:
         pass
     for line in os.popen("python3 setup.py sdist").readlines():

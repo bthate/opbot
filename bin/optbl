@@ -14,6 +14,13 @@ from op.hdl import Handler
 h = Handler()
 h.walk("opbot,op")
 
+print("# OPBOT - pure python3 IRC bot (op/tbl.py)")
+print("#")
+print("# This file is placed in the Public Domain.")
+print("")
+print("#:")
 print("modnames = %s" % h.modnames)
+print("#:")
 print("names = %s" % h.names)
+print("#:")
 print("pkgnames = %s" % h.pkgnames)

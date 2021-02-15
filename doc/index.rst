@@ -7,7 +7,7 @@ OPBOT is a pure python3 IRC chat bot that can run as a background daemon
 for 24/7 a day presence in a IRC channel. It installs itself as a service so
 you can get it restarted on reboot. You can use it to display RSS feeds, act as a
 UDP to IRC gateway, program your own commands for it, have it log objects on
-disk and search. 
+disk and search, see the :ref:`manpage <manpage>`
 
 OPBOT is placed in the Public Domain, no COPYRIGHT, no LICENSE.
 
@@ -166,23 +166,27 @@ MODULES
 
 OPBOT provides the following modules:
 
-::
+.. autosummary::
+    :toctree: 
+    :template: module.rst
 
-    op                  - object programming library
-    op.all              - all modules
+
+    op.all		- all modules
     op.clk              - clock/repeater
     op.dbs              - databases
     op.hdl              - handler
-    op.itr              - introspection
-    op.obj              - objects
+    op.itr		- introspection
+    op.obj		- objects
     op.prs              - parser
-    op.run              - runtime
-    op.tbl              - tables
+    op.run		- runtime
+    op.tbl		- tables
     op.thr              - threads
     op.trm              - terminal
     op.utl              - utilities
 
-::
+.. autosummary::
+    :toctree: 
+    :template: module.rst
 
     opbot.cli		- cli commands
     opbot.cmd		- list of commands
@@ -195,7 +199,6 @@ OPBOT provides the following modules:
     opbot.usr		- users
     opbot.ver		- version
 
-
 CONTACT
 =======
 
@@ -203,3 +206,10 @@ CONTACT
 
 | Bart Thate (bthate@dds.nl, thatebart@gmail.com)
 | botfather on #dunkbots at irc.freenode.net
+
+.. toctree::
+   :hidden:
+   :glob:
+
+   man
+   *
