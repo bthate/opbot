@@ -173,6 +173,15 @@ class Handler(Object):
         if mn in self.table:
             return self.table[mn]
 
+    def get_names(self, nm, tbl="op.tbl"):
+        if not self.names:
+            try:
+                mod = direct(tbl)
+                update(self.names, mod.pkgnames)
+            except ImportError:
+                pass
+        return get(self.names, nm, None)        
+
     def init(self, mns):
         thrs = []
         for mn in spl(mns):
@@ -204,11 +213,11 @@ class Handler(Object):
         self.table[mn] = direct(mn)
         self.intro(self.table[mn])
 
-    def load_mod(self, mns):
+    def load_mod(self, mns, tbl="op.tbl"):
         if not self.pkgnames:
             try:
-                import op.tbl
-                update(self.pkgnames, op.tbl.pkgnames)
+                mod = direct(tbl)
+                update(self.pkgnames, mod.pkgnames)
             except ImportError:
                 pass
         for mn in spl(mns):
