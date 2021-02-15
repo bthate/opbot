@@ -30,7 +30,7 @@ def main():
     parse_cli()
     h = Basic()
     h.fromdir(os.path.join(cfg.wd, "mod"))
-    h.load_mod("cli,cmd,irc,usr,ver")
+    h.load_mod("cli,cmd,fnd,irc,rss,usr,ver")
     h.load_mod(cfg.mods)
     return h.cmd(cfg.otxt)
 

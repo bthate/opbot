@@ -1,5 +1,5 @@
 [Unit]
-Description=OPBOT - operbot
+Description=OPBOT - pure python3 IRC bot
 After=network-online.target
 
 [Service]

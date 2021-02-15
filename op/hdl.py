@@ -188,7 +188,7 @@ class Handler(Object):
         if not self.names:
             try:
                 mod = direct(tbl)
-                update(self.names, mod.pkgnames)
+                update(self.names, mod.names)
             except ImportError:
                 pass
         return get(self.names, nm, [nm,])

@@ -18,6 +18,7 @@ from op.utl import privileges, os
 def main():
     last(cfg)
     cfg.wd = "/var/lib/opbot/"
+    cfg.mods += ",irc"
     privileges("opbot")
     h = Core()
     h.fromdir(os.path.join(cfg.wd, "mod"))
