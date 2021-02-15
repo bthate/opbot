@@ -59,6 +59,7 @@ show_authors = False
 pygments_style = 'sphinx'
 modindex_common_prefix = [""]
 keep_warnings = True
+html_favicon = "smile.png"
 html_theme = "haiku"
 html_theme_path = []
 html_short_title = "OPBOT %s" % __version__

@@ -1,0 +1,5 @@
+include README.rst
+include MANIFEST.in
+include opbot.service
+recursive-include doc *
+recursive-include bin *

@@ -170,8 +170,6 @@ OPBOT provides the following modules:
     :toctree: 
     :template: module.rst
 
-
-    op.all		- all modules
     op.clk              - clock/repeater
     op.dbs              - databases
     op.hdl              - handler
