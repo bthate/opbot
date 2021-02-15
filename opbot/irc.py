@@ -1,4 +1,10 @@
+# OPBOT - pure python3 IRC bot (bin/clean)
+#
 # This file is placed in the Public Domain.
+
+"irc bot"
+
+# imports
 
 import os, queue, socket, textwrap
 import time, threading, _thread
@@ -14,6 +20,8 @@ from op.utl import locked
 from .usr import Users
 from .ver import __version__
 
+# defines
+
 def __dir__():
     return ("Cfg", "DCC", "Event", "IRC", "cfg", "init")
 
@@ -23,6 +31,8 @@ def init(hdl):
     return launch(i.start)
 
 saylock = _thread.allocate_lock()
+
+# classes
 
 class ENOUSER(Exception):
 
@@ -437,6 +447,8 @@ class DCC(Handler):
 
     def say(self, channel, txt):
         self.raw(txt)
+
+# commands
 
 def cfg(event):
     c = Cfg()

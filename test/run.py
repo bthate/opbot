@@ -41,3 +41,6 @@ def exec(cmd):
 h = Test()
 h.walk("opbot,op")
 h.start()
+
+for e in exec("rss https://www.reddit.com/r/python/.rss"):
+    e.wait()

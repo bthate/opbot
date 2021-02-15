@@ -1,4 +1,10 @@
+# OPBOT - pure python3 IRC bot (op/hdl.py)
+#
 # This file is placed in the Public Domain.
+
+"handler"
+
+# imports
 
 import inspect, os, queue, sys, threading, time
 
@@ -9,10 +15,14 @@ from .utl import direct, has_mod, locked, spl
 
 import _thread
 
+# defines
+
 def __dir__():
-    return ("Bus", "Command", "Event", "Handler", "cmd")
+    return ("Bus", "Core", "CoreBus", "Console", "Command", "Event", "Handler", "cmd")
 
 loadlock = _thread.allocate_lock()
+
+# classes
 
 class Bus(Object):
 
@@ -180,7 +190,7 @@ class Handler(Object):
                 update(self.names, mod.pkgnames)
             except ImportError:
                 pass
-        return get(self.names, nm, None)        
+        return get(self.names, nm, [nm,])
 
     def init(self, mns):
         thrs = []
@@ -201,17 +211,18 @@ class Handler(Object):
                     self.register(key, o)
                 elif o.__code__.co_varnames[0] == "event":
                     self.cmds[key] = o
-                self.modnames[key] = o.__module__
-        for _key, o in inspect.getmembers(mod, inspect.isclass):
-            if issubclass(o, Object):
-                t = "%s.%s" % (o.__module__, o.__name__)
-                if o.__name__.lower() not in self.names:
-                    self.names.append(o.__name__.lower(), t)
+        #        self.modnames[key] = o.__module__
+        #for _key, o in inspect.getmembers(mod, inspect.isclass):
+        #    if issubclass(o, Object):
+        #        t = "%s.%s" % (o.__module__, o.__name__)
+        #        if o.__name__.lower() not in self.names:
+        #            self.names.append(o.__name__.lower(), t)
 
     @locked(loadlock)
     def load(self, mn):
         self.table[mn] = direct(mn)
         self.intro(self.table[mn])
+        return self.table[mn]
 
     def load_mod(self, mns, tbl="op.tbl"):
         if not self.pkgnames:
@@ -297,6 +308,8 @@ class Console(BusCore):
     def start(self):
         super().start()
         launch(self.input)
+
+# functions
 
 def cmd(handler, obj):
     obj.parse()

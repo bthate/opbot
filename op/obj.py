@@ -1,6 +1,14 @@
+# OPBOT - pure python3 IRC bot (op/obj.py)
+#
 # This file is placed in the Public Domain.
 
+"objects"
+
+# imports
+
 import datetime, importlib, json, os, random, sys, uuid
+
+# classes
 
 class ENOCLASS(Exception):
 
@@ -83,6 +91,8 @@ class Ol(Object):
     def update(self, d):
         for k, v in d.items():
             self.append(k, v)
+
+# functions
 
 def cdir(path):
     if os.path.exists(path):
@@ -293,6 +303,8 @@ def xdir(o, skip=None):
             continue
         res.append(k)
     return res
+
+# runtime
 
 cfg = Cfg()
 cfg.wd = ""

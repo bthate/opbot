@@ -1,7 +1,7 @@
 #!/usr/bin/python3
-# OPBOT - operbot (bin/env)
+# OPBOT - pure python3 IRC bot (bin/env)
 #
-# this file is placed in the public domain
+# This file is placed in the Public Domain.
 
 "build environment"
 

@@ -1,4 +1,10 @@
-# This file is placed in the Public Domain
+# OPBOT - pure python3 IRC bot (opbot/rss.py)
+#
+# This file is placed in the Public Domain.
+
+"system commands"
+
+# imports
 
 import os
 import shutil
@@ -13,8 +19,12 @@ from op.prs import elapsed, parse
 from op.run import cfg, starttime
 from op.utl import fntime, get_name
 
+# defines
+
 def __dir__():
     return ("flt", "thr", "upt")
+
+# commands
 
 def flt(event):
     try:

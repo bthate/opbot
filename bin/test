@@ -6,20 +6,11 @@
 import os, unittest
 
 from op.run import cfg, parse_cli
-from op.trm import termsave, termreset
+from op.trm import exec, termsave, termreset
+
+cfg.wd = os.path.expanduser("~/.test")
 
 import test.run
-
-def exec(main):
-    termsave()
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("")
-    except PermissionError as ex:
-        print(str(ex))
-    finally:
-        termreset()
 
 def open(txt):
     try:
@@ -31,7 +22,6 @@ def open(txt):
 def main():
     test_path = os.getcwd() + os.sep + "test"
     open("rm -fR ~/.test")
-    cfg.wd = os.path.expanduser("~/.test")
     parse_cli()
     if cfg.op("v"):
         cfg.verbose = True

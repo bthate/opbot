@@ -1,4 +1,10 @@
+# OPBOT - pure python3 IRC bot (op/run.py)
+#
 # This file is placed in the Public Domain.
+
+"runtime"
+
+# imports
 
 import os, sys, time
 
@@ -7,7 +13,7 @@ from .hdl import Core, Console
 from .prs import parse
 from .trm import exec
 
-starttime = time.time()
+# functions
 
 def run(main):
     try:
@@ -25,3 +31,7 @@ def parse_cli():
     cfg.wd = cfg.sets.wd or cfg.wd
     cfg.mods = cfg.sets.mods or cfg.mods
     return cfg
+
+# runtime
+
+starttime = time.time()

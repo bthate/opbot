@@ -1,7 +1,15 @@
+# OPBOT - pure python3 IRC bot (opbot/usr.py)
+#
 # This file is placed in the Public Domain.
+
+"users"
+
+# imports
 
 from op.dbs import find
 from op.obj import Object, get, save
+
+# classes
 
 class User(Object):
 
@@ -69,6 +77,8 @@ class Users(Object):
             user.perms.append(permission.upper())
             save(user)
         return user
+
+# commands
 
 def dlt(event):
     if not event.args:

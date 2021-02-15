@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
+# OPBOT - pure python3 IRC bot (bin/opbotd)
+#
 # This file is placed in the Public Domain.
+
+"daemon"
+
+# imports
 
 from op.dbs import last
 from op.obj import cfg
 from op.hdl import Core
 from op.run import run
 from op.utl import privileges, os
+
+# functions
 
 def main():
     last(cfg)
@@ -17,5 +25,7 @@ def main():
     h.start()
     h.init(cfg.mods)
     h.wait()
+
+# runtime
 
 run(main)

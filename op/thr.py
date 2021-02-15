@@ -1,9 +1,17 @@
+# OPBOT - pure python3 IRC bot (bin/clean)
+#
 # This file is placed in the Public Domain.
+
+"threads"
+
+# imports
 
 import queue, threading
 
 from .obj import Default, Object
 from .utl import get_name
+
+# classes
 
 class Thr(threading.Thread):
 
@@ -43,6 +51,8 @@ class Thr(threading.Thread):
     def wait(self, timeout=None):
         super().join(timeout)
         return self._result
+
+# functions
 
 def launch(func, *args, **kwargs):
     name = kwargs.get("name", get_name(func))

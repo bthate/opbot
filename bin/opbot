@@ -1,14 +1,26 @@
 #!/usr/bin/env python3
+# OPBOT - pure python3 IRC bot (bin/clean)
+#
 # This file is placed in the Public Domain.
+
+"console"
+
+# imports
 
 from op.run import Console, cfg, exec, parse_cli, os
 
+# defines
+
 cfg.wd = os.path.expanduser("~/.opbot")
+
+# classes
 
 class Console(Console):
 
     def direct(self, txt):
         print(txt)
+
+# functions
 
 def main():
     parse_cli()
@@ -22,5 +34,7 @@ def main():
         h.start()
         h.init(cfg.mods)
         h.wait()
+
+# runtime
 
 exec(main)

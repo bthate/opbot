@@ -1,11 +1,21 @@
+# OPBOT - pure python3 IRC bot (op/dbs.py)
+#
 # This file is placed in the Public Domain.
+
+"database"
+
+# imports
 
 from .obj import hook, search, update, os
 from .run import cfg
 from .utl import fntime, get_type
 
+# defines
+
 def __dir__():
     return ("all", "deleted", "every", "find", "find_event", "fnd", "last", "last_match", "last_type", "last_fn")
+
+# functions
 
 def all(otype, selector=None, index=None, timed=None):
     nr = -1

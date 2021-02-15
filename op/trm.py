@@ -1,6 +1,10 @@
-# OPLIV - Object Programming Library (trm.py)
+# OPBOT - pure python3 IRC bot (op/trm.py)
 #
 # This file is placed in the Public Domain.
+
+"terminal"
+
+# imports
 
 import atexit
 import os
@@ -10,7 +14,7 @@ import _thread
 
 from .utl import get_exception
 
-resume = {}
+# functions
 
 def exec(main):
     termsave()
@@ -40,3 +44,7 @@ def termsave():
         atexit.register(termreset)
     except termios.error:
         pass
+
+# runtime
+
+resume = {}

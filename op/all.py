@@ -1,4 +1,10 @@
+# OPBOT - pure python3 IRC bot (op/all.py)
+#
 # This file is placed in the Public Domain.
+
+"import all modules"
+
+# imports
 
 import op.clk
 import op.dbs

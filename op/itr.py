@@ -1,8 +1,16 @@
+# OPBOT - pure python3 IRC bot (bin/clean)
+#
 # This file is placed in the Public Domain.
+
+"introspection"
+
+# imports
 
 import inspect
 
 from .obj import Object, Ol
+
+# functions
 
 def find_cmds(mod):
     cmds = Object()

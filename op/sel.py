@@ -1,10 +1,18 @@
+# OPBOT - pure python3 IRC bot (op/sel.py)
+#
 # This file is placed in the Public Domain.
+
+"select"
+
+# imports
 
 import selectors, time
 
 from .hdl import Event, Handler
 from .thr import launch
 from .utl import get_name
+
+# classes
 
 class EDISCONNECT(Exception):
 

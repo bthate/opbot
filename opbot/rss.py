@@ -1,4 +1,10 @@
+# OPBOT - pure python3 IRC bot (opbot/rss.py)
+#
 # This file is placed in the Public Domain.
+
+"rss fetcher"
+
+# imports
 
 import urllib
 
@@ -12,19 +18,22 @@ from op.utl import get_tinyurl, get_url, strip_html, unescape
 
 from urllib.error import HTTPError, URLError
 
-def __dir__():
-    return ("Cfg", "Rss", "Feed", "Fetcher", "init", "dpl", "rem", "ftc", "rss")
-
 try:
     import feedparser
     gotparser = True
 except ModuleNotFoundError:
     gotparser = False
 
+# defines
+
+def __dir__():
+    return ("Cfg", "Rss", "Feed", "Fetcher", "init", "dpl", "rem", "ftc", "rss")
+
 def init(hdl):
-    "start a rss poller"
     f = Fetcher()
     return launch(f.start)
+
+# classes
 
 class Cfg(Cfg):
 
@@ -128,6 +137,8 @@ class Fetcher(Object):
     def stop(self):
         save(self.seen)
 
+# functions
+
 def get_feed(url):
     if cfg.debug:
         return [Object(), Object()]
@@ -142,6 +153,8 @@ def get_feed(url):
                 yield entry
     else:
         return [Object(), Object()]
+
+# commands
 
 def dpl(event):
     if len(event.args) < 2:

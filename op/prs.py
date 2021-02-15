@@ -1,7 +1,13 @@
+# OPBOT - pure python3 IRC bot (bin/clean)
+#
 # This file is placed in the Public Domain.
+
+# imports
 
 from .obj import Default, Object, update
 from .utl import day, time
+
+# defines
 
 def __dir__():
     return ("elapsed", "parse", "parse_cli", "parse_time", "parse_ymd")
@@ -27,6 +33,8 @@ year_formats = [
     "%H:%M:%S",
     "%H:%M"
 ]
+
+# classes
 
 class Token(Object):
 
@@ -103,6 +111,8 @@ class Timed(Object):
             self["from"] = time.time() - v
         if vv:
             self["to"] = time.time() - vv
+
+# functions
 
 def elapsed(seconds, short=True):
     txt = ""

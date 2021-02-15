@@ -1,4 +1,10 @@
+# OPBOT - pure python3 IRC bot (op/clk.py)
+#
 # This file is placed in the Public Domain.
+
+"clock/repeater"
+
+# imports
 
 import threading
 import time
@@ -7,8 +13,12 @@ from .obj import Object
 from .thr import launch
 from .utl import get_name
 
+# defines
+
 def __dir__():
     return ("Repeater", "Timer")
+
+# classes
 
 class Timer(Object):
 

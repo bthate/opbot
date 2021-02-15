@@ -1,10 +1,18 @@
+# OPBOT - pure python3 IRC bot (opbot/cli.py)
+#
 # This file is placed in the Public Domain.
+
+"cli commands"
+
+# imports
 
 import os, shutil
 
 from op.dbs import last
 from op.obj import cfg, format, save, update
 from op.prs import parse
+
+# commands
 
 def cpy(event):
     md = os.path.join(cfg.wd, "mod")

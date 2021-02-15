@@ -1,4 +1,8 @@
+# OPBOT - pure python3 IRC bot (op/utl.py)
+#
 # This file is placed in the Public Domain.
+
+"utilities"
 
 import datetime, getpass, inspect, os, pwd, random
 import re, socket, sys, time, traceback, types, urllib
@@ -6,6 +10,8 @@ import importlib, importlib.util
 
 from urllib.parse import quote_plus, urlencode
 from urllib.request import Request, urlopen
+
+# defines
 
 timestrings = [
     "%a, %d %b %Y %H:%M:%S %z",
@@ -24,6 +30,8 @@ timestrings = [
     "%d %b %Y %H:%M:%S +0000",
     "%d, %b %Y %H:%M:%S +0000"
 ]
+
+# functions
 
 def cdir(path):
     if os.path.exists(path):
