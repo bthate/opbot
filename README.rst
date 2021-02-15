@@ -154,8 +154,6 @@ to send a udp packet to OPBOT in python3:
      sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
      sock.sendto(bytes(txt.strip(), "utf-8"), host, port)
 
-
-
 MODULES
 =======
 
@@ -201,7 +199,7 @@ MANPAGE
  OPBOT(1)			   User Commands 		        OPBOT(1)
 
  NAME
-         OPBOT - using the law to admininster poison equals genocide.
+         OPBOT - pure python3 IRC bot.
 
  SYNOPSIS
          opbot <cmd> [mods=mod1,mod2] [-c] [-h] -[l] [-r] [-v] [-w]
@@ -211,8 +209,8 @@ MANPAGE
  DESCRIPTION
          OPBOT is a pure python3 IRC chat bot that can run as a background daemon
          for 24/7 a day presence in a IRC channel. You can use it to display RSS
-         feeds, program your own commands for  it, have it log objects on disk and
-         search. 
+         feeds, relay udp packet data to IRC channel, program your own commands
+         for it and have it log objects to disk for persistence. 
 
          If you want to run the bot 24/7 you can install OPBOT as a service for
          the systemd daemon. You can do this by copying the following into

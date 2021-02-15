@@ -46,7 +46,7 @@ class Cfg(Cfg):
         self.nick = "opbot"
         self.port = 6667
         self.server = "localhost"
-        self.realname = "using the law to administer poison equals genocide"
+        self.realname = "pure python3 IRC bot"
         self.username = "opbot"
 
 class Event(Event):

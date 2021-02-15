@@ -3,14 +3,23 @@
 #
 # This file is placed in the Public Domain.
 
+"unittests"
+
+# imports
+
 import os, unittest
 
 from op.run import cfg, parse_cli
 from op.trm import exec, termsave, termreset
 
+# defines
+
 cfg.wd = os.path.expanduser("~/.test")
+cfg.debug = True
 
 import test.run
+
+# functions
 
 def open(txt):
     try:
@@ -31,5 +40,7 @@ def main():
         pat = "test*"
     suite = unittest.loader.TestLoader().discover(test_path, pattern=pat)
     unittest.TextTestRunner(verbosity=3).run(suite)
+
+# runtime
 
 exec(main)
