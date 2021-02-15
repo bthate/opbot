@@ -12,6 +12,7 @@ import os, readline, shutil
 from op.hdl import BusCore
 from op.run import cfg, parse_cli
 from op.trm import exec
+from op.utl import privileges
 
 # defines
 
@@ -28,6 +29,7 @@ class Basic(BusCore):
 
 def main():
     parse_cli()
+    privileges("opbot")
     h = Basic()
     h.fromdir(os.path.join(cfg.wd, "mod"))
     h.load_mod("cli,cmd,fnd,irc,rss,usr,ver")
