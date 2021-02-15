@@ -29,7 +29,6 @@ def fnd(event):
     name = event.args[0]
     bot = Bus.by_orig(event.orig)
     t = bot.get_names(name)
-    print(t)
     nr = -1
     for otype in t:
         for fn, o in find(otype, event.prs.gets, event.prs.index, event.prs.timed):
