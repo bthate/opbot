@@ -6,9 +6,9 @@
 
 # imports
 
-from .obj import hook, search, update, os
+from .obj import get_type, hook, search, update, os
 from .run import cfg
-from .utl import fntime, get_type
+from .utl import fntime
 
 # defines
 
