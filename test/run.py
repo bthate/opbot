@@ -5,6 +5,8 @@ from op.hdl import BusCore, Command
 
 from test.prm import param
 
+events = []
+
 class Test(BusCore):
 
     def direct(self, txt):

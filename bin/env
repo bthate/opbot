@@ -11,7 +11,7 @@ import os
 
 # defines
 
-old =  os.getcwd()
+old = os.getcwd()
 pn = old.split(os.sep)[-1].lower()
 
 # functions
@@ -20,22 +20,22 @@ def open(txt):
     try:
         for line in os.popen(txt).readlines():
             print(line.rstrip())
-    except:
+    except Exception as ex:
         pass
 
 def main():
     open("bin/clean")
     try:
         shutil.rmtree("build")
-    except:
+    except Exception as ex:
         pass
     try:
         shutil.rmtree("dist")
-    except:
+    except Exception as ex::
         pass
     try:
         shutil.rmtree("%s.egg-info" % pn)
-    except:
+    except Exception as ex:
         pass
     for line in os.popen("python3 setup.py sdist").readlines():
         print(line.strip())

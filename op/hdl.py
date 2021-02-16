@@ -202,6 +202,15 @@ class Handler(Object):
                 thrs.append(launch(mod.init, self))
         return thrs
 
+    def input(self):
+        while not self.stopped:
+            try:
+                e = self.poll()
+            except EOFError:
+                break
+            self.put(e)
+            e.wait()
+
     def intro(self, mod):
         fqn = mod.__name__
         mn = fqn.split(".")[-1]
@@ -299,15 +308,6 @@ class Console(BusCore):
     def direct(self, txt):
         pass
 
-    def input(self):
-        while 1:
-            try:
-                e = self.poll()
-            except EOFError:
-                break
-            self.put(e)
-            e.wait()
-
     def poll(self):
         return Command(input("> "))
 
@@ -322,7 +322,7 @@ def cmd(handler, obj):
     if obj.cmd not in handler.cmds:
         mn = get(handler.modnames, obj.cmd, None)
         if mn:
-             handler.load(mn)
+            handler.load(mn)
     f = get(handler.cmds, obj.cmd, None)
     res = None
     if f:

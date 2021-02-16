@@ -9,7 +9,7 @@
 import os, shutil
 
 from op.dbs import last
-from op.obj import cfg, format, save, update
+from op.obj import Object, cfg, edit, format, save
 from op.prs import parse
 
 # commands
@@ -39,7 +39,8 @@ def set(event):
         event.reply(format(cfg))
         return
     last(cfg)
+    p = Object()
     parse(p, event.rest)
-    update(cfg, p)
+    edit(cfg, p)
     save(cfg)
     event.reply("ok")

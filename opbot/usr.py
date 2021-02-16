@@ -11,6 +11,10 @@ from op.obj import Object, get, save
 
 # classes
 
+class ENOUSER(Exception):
+
+    pass
+
 class User(Object):
 
     def __init__(self):
@@ -93,8 +97,8 @@ def dlt(event):
 def met(event):
     if not event.args:
         return
-    u = User()
-    u.user = event.rest
-    u.perms = ["USER"]
-    save(u)
+    user = User()
+    user.user = event.rest
+    user.perms = ["USER"]
+    save(user)
     event.reply("ok")

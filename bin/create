@@ -7,7 +7,8 @@
 
 # imports
 
-import os; import sys
+import os, sys
+
 sys.path.insert(0, os.getcwd())
 sys.path.insert(0, os.getcwd() + os.sep + "..")
 
@@ -23,8 +24,6 @@ import urllib.parse
 import urllib.request
 
 try:
-    import setuptools
-    import setuptools.command
     from setuptools.command.easy_install import main
 except ImportError as ex:
     print("setuptools is needed" % str(ex))
@@ -44,8 +43,8 @@ print("setting PYTHONPATH to %s" % installdir)
 os.environ['PYTHONPATH'] = installdir
 os.environ['PYTHONUSERBASE'] = installdir
 
-#todo = ["w/opdoc", "w/oplib", "w/opbot"]
-#todo = ["w/%s" % x for x in os.listdir("w") if os.path.isdir("w/%s" % x)]
+# todo = ["w/opdoc", "w/oplib", "w/opbot"]
+# todo = ["w/%s" % x for x in os.listdir("w") if os.path.isdir("w/%s" % x)]
 todo = [os.getcwd(),]
 print(todo)
 
@@ -62,9 +61,8 @@ def zopen(txt):
     try:
         for line in os.popen(txt).readlines():
             print(line.rstrip())
-    except:
+    except Exception as ex:
         pass
-
 
 def work(path):
     if "run" in path:
@@ -72,24 +70,24 @@ def work(path):
     os.chdir(path)
     cleanpath = os.path.join(path, "bin/clean")
     if os.path.isdir(cleanpath):
-        for x in os.popen().readlines():
+        for x in os.popen("bin/clean").readlines():
             print(x)
     try:
         shutil.rmtree("build")
-    except:
+    except Exception as ex:
         pass
     try:
         shutil.rmtree("dist")
-    except:
+    except Exception as ex:
         pass
     nname = path.split(os.sep)[-1]
     try:
         shutil.rmtree("%s.egg-info" % nname)
-    except:
+    except Exception as ex:
         pass
     try:
         os.mkdir("dist")
-    except:
+    except Exceptino as ex:
         pass
     for line in os.popen("python3 setup.py sdist").readlines():
         print(line.strip())
@@ -118,12 +116,12 @@ zopen("rm -fR ~/.cache/pip")
 
 try:
     shutil.rmtree(installdir)
-except:
+except Exception as ex:
     pass
 
 try:
     os.mkdir(installdir)
-except:
+except Exception as ex:
     pass
 
 if not os.path.exists("%s/get-pip.py" % installdir):
@@ -140,39 +138,39 @@ for path in todo:
     if path.startswith("."):
         continue
     if path == "dist":
-        continue    
+        continue
     if os.path.isdir(path):
         work(path)
     os.chdir(olddir)
 
 try:
     shutil.rmtree("%s/pip" % installdir)
-except:
+except Exception as ex:
     pass
 
 try:
     shutil.rmtree("%s/pip-19.1.1.dist-info" % installdir)
-except:
+except Exception as ex:
     pass
 
 try:
     shutil.rmtree("%s/wheel" % installdir)
-except:
+except Exception as ex:
     pass
 
 try:
     shutil.rmtree("%s/wheel-0.33.4.dist-info" % installdir)
-except:
+except Exception as ex:
     pass
 
 try:
     shutil.rmtree("%s/__pycache__" % installdir)
-except:
+except Exception as ex:
     pass
 
 try:
     os.remove(installdir + os.sep + "get-pip.py")
-except:
+except Exception as ex:
     pass
 
 for line in os.popen("tar zcvf %s.tar.gz %s" % (fname.lower(), fname)).readlines():

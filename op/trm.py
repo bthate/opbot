@@ -6,13 +6,7 @@
 
 # imports
 
-import atexit
-import os
-import sys
-import termios
-import _thread
-
-from .utl import get_exception
+import atexit, sys, termios
 
 # functions
 

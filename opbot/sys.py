@@ -6,18 +6,13 @@
 
 # imports
 
-import os
-import shutil
-import threading
-import time
+import threading, time
 
-from op.run import cfg
-from op.dbs import find, last, list_files, last_match
-from op.obj import Object, format, get, save, update
+from op.obj import Object, get, update
 from op.hdl import Bus
-from op.prs import elapsed, parse
-from op.run import cfg, starttime
-from op.utl import fntime, get_name
+from op.prs import elapsed
+from op.run import starttime
+from op.utl import get_name
 
 # defines
 

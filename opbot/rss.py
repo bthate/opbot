@@ -43,7 +43,7 @@ class Cfg(Cfg):
 
 class Feed(Default):
 
-     pass
+    pass
 
 class Rss(Object):
 

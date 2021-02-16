@@ -6,12 +6,10 @@
 
 # imports
 
-import os, queue, socket, textwrap
-import time, threading, _thread
+import os, queue, socket, textwrap, time, threading, _thread
 
-from op.dbs import find, last
-from op.obj import Cfg, Default, Object, format, get, save, update
-from op.obj import cfg as maincfg
+from op.dbs import last
+from op.obj import Cfg, Object, format, save, update
 from op.hdl import Bus, Event, Handler, cmd
 from op.prs import parse
 from op.thr import launch
@@ -277,7 +275,7 @@ class IRC(Handler):
         if not self._buffer:
             self._some()
         if not self._buffer:
-            return 
+            return
         e = self._parsing(self._buffer.pop(0))
         cmd = e.command
         if cmd == "PING":
@@ -425,12 +423,7 @@ class DCC(Handler):
 
     def input(self):
         self._connected.wait()
-        while not self.stopped:
-            try:
-                e = self.poll()
-            except EOFError:
-                break
-            self.put(e)
+        super().input()
 
     def poll(self):
         e = Event()

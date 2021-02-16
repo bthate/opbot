@@ -4,6 +4,8 @@
 
 "utilities"
 
+# imports
+
 import datetime, getpass, inspect, os, pwd, random
 import re, socket, sys, time, traceback, types, urllib
 import importlib, importlib.util
@@ -32,20 +34,6 @@ timestrings = [
 ]
 
 # functions
-
-def cdir(path):
-    if os.path.exists(path):
-        return
-    res = ""
-    path2, _fn = os.path.split(path)
-    for p in path2.split(os.sep):
-        res += "%s%s" % (p, os.sep)
-        padje = os.path.abspath(os.path.normpath(res))
-        try:
-            os.mkdir(padje)
-            os.chmod(padje, 0o700)
-        except (IsADirectoryError, NotADirectoryError, FileExistsError):
-            pass
 
 def day():
     return str(datetime.datetime.today()).split()[0]
@@ -136,15 +124,6 @@ def get_tinyurl(url):
         if i:
             return i.groups()
     return []
-
-def get_type(o):
-    t = type(o)
-    if t == type:
-        try:
-            return "%s.%s" % (o.__module__, o.__name__)
-        except AttributeError:
-            pass
-    return str(type(o)).split()[-1][1:-2]
 
 def get_url(url):
     from .run import cfg

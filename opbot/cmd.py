@@ -6,13 +6,8 @@
 
 # imports
 
-import threading, time
-
-from op.dbs import last
 from op.hdl import Bus
-from op.obj import Cfg, format, keys, save, update
-
-from .usr import User
+from op.obj import keys
 
 # defines
 

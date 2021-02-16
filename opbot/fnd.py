@@ -5,13 +5,13 @@
 "find"
 
 # imports
- 
-from op.obj import Object, format, get, keys
+
+from op.obj import format, keys
 from op.dbs import find, list_files
 from op.hdl import Bus
 from op.prs import elapsed
 from op.run import cfg
-from op.utl import fntime, get_names, time
+from op.utl import fntime, time
 
 # defines
 
