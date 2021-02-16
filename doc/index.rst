@@ -7,7 +7,7 @@ OPBOT is a pure python3 IRC chat bot that can run as a background daemon
 for 24/7 a day presence in a IRC channel. It installs itself as a service so
 you can get it restarted on reboot. You can use it to display RSS feeds, act as a
 UDP to IRC gateway, program your own commands for it, have it log objects on
-disk and search, see the :ref:`manpage <manpage>`
+disk and search. 
 
 OPBOT is placed in the Public Domain, no COPYRIGHT, no LICENSE.
 
@@ -41,7 +41,14 @@ to configure opbot use the cfg command:
 ::
 
  $ sudo opctl cfg server=<server> channel=<channel> nick=<nick>
- $ suod systemctl restart opbot
+
+add your userhost to the bot by introducing yourself as a user:
+
+::
+
+ $ sudo opctl met <userhost>
+
+the bot should now listen to the !cmd typed.
 
 if you don't want opbot to startup at boot, remove the service file:
 
@@ -68,7 +75,6 @@ you can use opctl <cmd> to run a command directly, use the cmd command to see a 
  $ sudo opctl cmd
  cfg,cmd,dne,dpl,fnd,ftc,log,mbx,rem,rss,tdo,tsk,udp,upt,ver
 
-
 IRC
 ===
 
@@ -86,11 +92,20 @@ you can use setters to edit fields in a configuration:
  $ sudo opctl cfg server=irc.freenode.net channel=\#dunkbots nick=opbot
  ok
 
+add you irc client's userhost to the bot:
+
+::
+
+ $ sudo opctl met ~botfather@jsonbot/daddy
+ ok
+
 then restart the opbot service:
 
 ::
 
  $ sudo systemctl restart opbot
+
+the bot should listen to your commands now, try !cmd.
 
 RSS
 ===
@@ -101,7 +116,7 @@ to be installed to have rss feeds working:
 
 ::
 
- $ sudo apt install feedparser
+ $ sudo apt install python3-feedparser
 
 to add an url use the rss command with an url:
 
@@ -173,11 +188,11 @@ OPBOT provides the following modules:
     op.clk              - clock/repeater
     op.dbs              - databases
     op.hdl              - handler
-    op.itr		- introspection
-    op.obj		- objects
+    op.itr              - introspection
+    op.obj              - objects
     op.prs              - parser
-    op.run		- runtime
-    op.tbl		- tables
+    op.run              - runtime
+    op.tbl              - tables
     op.thr              - threads
     op.trm              - terminal
     op.utl              - utilities
@@ -196,6 +211,7 @@ OPBOT provides the following modules:
     opbot.udp		- Uniform Datagram Protocol
     opbot.usr		- users
     opbot.ver		- version
+
 
 CONTACT
 =======

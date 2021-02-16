@@ -41,7 +41,14 @@ to configure opbot use the cfg command:
 ::
 
  $ sudo opctl cfg server=<server> channel=<channel> nick=<nick>
- $ suod systemctl restart opbot
+
+add your userhost to the bot by introducing yourself as a user:
+
+::
+
+ $ sudo opctl met <userhost>
+
+the bot should now listen to the !cmd typed.
 
 if you don't want opbot to startup at boot, remove the service file:
 
@@ -86,11 +93,20 @@ you can use setters to edit fields in a configuration:
  $ sudo opctl cfg server=irc.freenode.net channel=\#dunkbots nick=opbot
  ok
 
+add you irc client's userhost to the bot:
+
+::
+
+ $ sudo opctl met ~botfather@jsonbot/daddy
+ ok
+
 then restart the opbot service:
 
 ::
 
  $ sudo systemctl restart opbot
+
+the bot should listen to your commands now, try !cmd.
 
 RSS
 ===
@@ -101,7 +117,7 @@ to be installed to have rss feeds working:
 
 ::
 
- $ sudo apt install feedparser
+ $ sudo apt install python3-feedparser
 
 to add an url use the rss command with an url:
 
@@ -168,8 +184,6 @@ OPBOT provides the following modules:
 
 ::
 
-    op                  - object programming library
-    op.all              - all modules
     op.clk              - clock/repeater
     op.dbs              - databases
     op.hdl              - handler
