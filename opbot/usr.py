@@ -6,6 +6,8 @@
 
 # imports
 
+import logging
+
 from op.dbs import find
 from op.obj import Object, get, save
 
@@ -50,6 +52,7 @@ class Users(Object):
 
     def get_user(self, origin):
         u = list(self.get_users(origin))
+        logging.error(u)
         if u:
             return u[-1][-1]
 

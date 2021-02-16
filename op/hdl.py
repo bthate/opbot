@@ -7,6 +7,7 @@
 # imports
 
 import inspect, os, queue, sys, threading, time
+import logging
 
 from .obj import Cfg, Default, Object, Ol, get, update
 from .prs import parse
@@ -128,6 +129,7 @@ class Handler(Object):
         self.started = []
         self.stopped = False
         self.table = Object()
+        self.tablename = "op.tbl"
 
     def add(self, cmd, func):
         self.cmds[cmd] = func
@@ -179,6 +181,19 @@ class Handler(Object):
                 continue
             mod = self.load(fqn)
             self.intro(mod)
+
+    def get_cmd(self, cmd):
+        if not self.modnames:
+            try:
+                mod = direct(self.tablename)
+                update(self.modnames, mod.modnames)
+            except ImportError:
+                pass
+        if cmd not in self.cmds:
+            mn = get(self.modnames, cmd, None)
+            if mn:
+                self.load(mn)
+        return get(self.cmds, cmd, None)
 
     def get_mod(self, mn):
         if mn in self.table:
@@ -239,10 +254,10 @@ class Handler(Object):
                     self.cmds[key] = o
         return self.table[mn]
 
-    def load_mod(self, mns, tbl="op.tbl"):
+    def load_mod(self, mns):
         if not self.pkgnames:
             try:
-                mod = direct(tbl)
+                mod = direct(self.tablename)
                 update(self.pkgnames, mod.pkgnames)
             except ImportError:
                 pass
@@ -319,12 +334,8 @@ class Console(BusCore):
 
 def cmd(handler, obj):
     obj.parse()
-    if obj.cmd not in handler.cmds:
-        mn = get(handler.modnames, obj.cmd, None)
-        if mn:
-            handler.load(mn)
-    f = get(handler.cmds, obj.cmd, None)
     res = None
+    f = handler.get_cmd(obj.cmd)
     if f:
         res = f(obj)
         obj.show()
